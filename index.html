@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kontrolled Automation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+
+background:#070617;
+color:white;
+overflow-x:hidden;
+
+}
+
+/* Background */
+
+.bg{
+
+position:fixed;
+inset:0;
+z-index:-5;
+
+background:
+radial-gradient(circle at 15% 20%,#6d4aff55,transparent 30%),
+radial-gradient(circle at 85% 75%,#8b5cf655,transparent 28%),
+radial-gradient(circle at center,#11102b,#070617);
+
+}
+
+/* Floating Blobs */
+
+.blob{
+
+position:fixed;
+border-radius:50%;
+filter:blur(70px);
+opacity:.35;
+animation:float 18s infinite ease-in-out;
+
+}
+
+.blob1{
+
+width:320px;
+height:320px;
+background:#5b4bff;
+
+top:-120px;
+left:-80px;
+
+}
+
+.blob2{
+
+width:280px;
+height:280px;
+background:#2d9cff;
+
+bottom:-120px;
+right:-80px;
+
+animation-delay:5s;
+
+}
+
+@keyframes float{
+
+0%{
+
+transform:translateY(0px);
+
+}
+
+50%{
+
+transform:translateY(50px);
+
+}
+
+100%{
+
+transform:translateY(0px);
+
+}
+
+}
+
+/* NAVBAR */
+
+nav{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+padding:22px 8%;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+backdrop-filter:blur(18px);
+
+background:rgba(8,17,31,.45);
+
+border-bottom:1px solid rgba(255,255,255,.06);
+
+z-index:1000;
+
+}
+
+.logo{
+
+font-size:28px;
+font-weight:700;
+
+background:linear-gradient(90deg,#8b5cf6,#4f9cff);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+nav ul{
+
+display:flex;
+list-style:none;
+gap:35px;
+
+}
+
+nav a{
+
+color:#e5e1ff;
+
+text-decoration:none;
+
+font-size:15px;
+
+transition:.3s;
+
+}
+
+nav a:hover{
+
+color:#8b5cf6;
+
+}
+
+/* HERO */
+
+.hero{
+
+min-height:100vh;
+
+display:flex;
+
+align-items:center;
+
+padding:120px 8%;
+
+}
+
+.hero-content{
+
+max-width:760px;
+
+}
+
+.badge{
+
+display:inline-block;
+
+padding:8px 16px;
+
+background:#11102b;
+
+border:1px solid rgba(56,189,248,.25);
+
+border-radius:999px;
+
+color:#c4b5fd;
+
+font-size:14px;
+
+margin-bottom:30px;
+
+}
+
+.hero h1{
+
+font-size:64px;
+
+font-weight:800;
+
+line-height:1.1;
+
+margin-bottom:25px;
+
+}
+
+.hero h1 span{
+
+background:linear-gradient(90deg,#8b5cf6,#4f9cff);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.hero p{
+
+font-size:20px;
+
+line-height:1.8;
+
+color:#a8a4c2;
+
+max-width:650px;
+
+margin-bottom:40px;
+
+}
+
+.buttons{
+
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+
+}
+
+.btn{
+
+padding:18px 34px;
+
+border-radius:14px;
+
+font-weight:600;
+
+text-decoration:none;
+
+transition:.35s;
+
+}
+
+.primary{
+
+background:linear-gradient(135deg,#8b5cf6,#5b4bff);
+
+color:white;
+
+box-shadow:0 0 30px rgba(56,189,248,.35);
+
+}
+
+.primary:hover{
+
+transform:translateY(-5px);
+
+}
+
+.secondary{
+
+border:1px solid #8b5cf6;
+
+color:#8b5cf6;
+
+}
+
+.secondary:hover{
+
+background:#8b5cf6;
+
+color:#070617;
+
+}
+
+.hero-card{
+
+margin-top:70px;
+
+display:flex;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+}
+
+.stat{
+
+background:rgba(17,28,47,.9);
+
+padding:22px;
+
+border-radius:18px;
+
+border:1px solid rgba(255,255,255,.06);
+
+min-width:180px;
+
+transition:.35s;
+
+}
+
+.stat:hover{
+
+transform:translateY(-8px);
+
+border-color:#8b5cf6;
+
+}
+
+.stat h2{
+
+color:#8b5cf6;
+
+font-size:32px;
+
+margin-bottom:6px;
+
+}
+
+.stat p{
+
+margin:0;
+
+font-size:14px;
+
+color:#a8a4c2;
+
+}
+
+section{
+
+padding:100px 8%;
+
+}
+
+.title{
+
+font-size:42px;
+
+text-align:center;
+
+margin-bottom:20px;
+
+}
+
+.subtitle{
+
+text-align:center;
+
+color:#a8a4c2;
+
+margin-bottom:60px;
+
+}
+
+/* Reveal Animation */
+
+.hidden{
+
+opacity:0;
+
+transform:translateY(40px);
+
+transition:1s;
+
+}
+
+.show{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+nav ul{
+
+display:none;
+
+}
+
+.hero h1{
+
+font-size:46px;
+
+}
+
+.hero{
+
+padding-top:170px;
+
+}
+
+}
+
+</style>
+
+
+<style>
+.demo-panel{
+  width:min(520px,100%); background:rgba(15,13,39,.76); border:1px solid rgba(139,92,246,.28);
+  border-radius:28px; padding:28px; box-shadow:0 30px 100px rgba(0,0,0,.35),0 0 80px rgba(91,75,255,.12);
+  backdrop-filter:blur(22px); position:relative; overflow:hidden;
+}
+.demo-panel:before{content:"";position:absolute;inset:-1px;background:linear-gradient(135deg,rgba(139,92,246,.16),transparent 45%,rgba(79,156,255,.12));pointer-events:none}
+.demo-head,.demo-panel form,.demo-result{position:relative;z-index:1}
+.demo-head{display:flex;justify-content:space-between;gap:15px;margin-bottom:20px}
+.demo-head h2{font-size:25px;margin:6px 0}
+.demo-head p{color:#a8a4c2;font-size:13px;line-height:1.55}
+.mini-label{font-size:10px;letter-spacing:.16em;font-weight:800;color:#a78bfa}
+.live-pill{font-size:10px;color:#9ff5c8;border:1px solid rgba(159,245,200,.18);background:rgba(159,245,200,.06);padding:6px 9px;border-radius:999px;height:max-content;white-space:nowrap}
+.demo-panel form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.demo-panel textarea{grid-column:1/-1;min-height:90px}
+.demo-panel button{grid-column:1/-1}
+.demo-result{margin-top:16px;padding:17px;border:1px solid rgba(139,92,246,.17);background:rgba(0,0,0,.18);border-radius:15px;min-height:105px}
+.result-label{font-size:9px;letter-spacing:.15em;color:#8b5cf6;font-weight:800;margin-bottom:9px}
+#resultText{color:#d9d6e9;font-size:13px;line-height:1.7;white-space:pre-wrap}
+.workflow{display:flex;align-items:center;justify-content:center;gap:13px;flex-wrap:wrap}
+.flow-node{min-width:180px;padding:22px;border:1px solid rgba(255,255,255,.07);background:rgba(18,16,45,.78);border-radius:18px;display:flex;flex-direction:column;gap:6px}
+.flow-node span{font-size:10px;color:#8b5cf6;font-weight:800}
+.flow-node b{font-size:15px}
+.flow-node small{color:#8f8aa9;font-size:11px}
+.flow-node.active{border-color:rgba(139,92,246,.45);box-shadow:0 0 35px rgba(139,92,246,.10)}
+.flow-arrow{color:#6f6a89;font-size:22px}
+.results-wrap{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center;padding:55px;border:1px solid rgba(139,92,246,.18);border-radius:28px;background:linear-gradient(135deg,rgba(91,75,255,.09),rgba(45,156,255,.045))}
+.results-wrap h2{font-size:42px;line-height:1.08;margin:10px 0 14px}
+.results-wrap p{color:#a8a4c2;line-height:1.75}
+.outcome-list{display:grid;gap:10px}
+.outcome-list div{display:flex;gap:16px;align-items:center;padding:17px;border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(5,5,18,.28)}
+.outcome-list b{color:#8b5cf6;font-size:11px}.outcome-list span{font-size:13px;color:#d8d4e8}
+.faq-grid{max-width:900px;margin:auto;display:grid;gap:12px}
+.faq-grid details{background:rgba(18,16,45,.72);border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:19px 22px}
+.faq-grid summary{cursor:pointer;font-weight:600;font-size:14px}
+.faq-grid p{color:#a8a4c2;line-height:1.65;font-size:13px;padding-top:12px}
+@media(max-width:900px){
+  .hero{display:block}
+  .hero-content{margin-bottom:45px}
+  .demo-panel{margin:auto}
+  .results-wrap{grid-template-columns:1fr}
+  .flow-arrow{transform:rotate(90deg)}
+}
+@media(max-width:560px){
+  .demo-panel form{grid-template-columns:1fr}
+  .demo-panel textarea,.demo-panel button{grid-column:auto}
+  .results-wrap{padding:28px}
+  .results-wrap h2{font-size:32px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<nav>
+
+<div class="logo">
+
+Kontrolled Automation
+
+</div>
+
+<ul>
+
+<li><a href="#home">Home</a></li>
+
+<li><a href="#sales-engine">Features</a></li>
+
+<li><a href="#workflow-preview">How It Works</a></li>
+
+<li><a href="#results">Outcomes</a></li>
+
+<li><a href="#contact">Contact</a></li>
+
+</ul>
+
+</nav>
+
+<header class="hero" id="home">
+  <div class="hero-content hidden">
+    <div class="badge">✦ AI SALES AUTOMATION</div>
+    <h1>Turn new leads into <span>consistent follow-ups.</span></h1>
+    <p>Kontrolled Automation builds AI-powered sales workflows that follow up with prospects automatically, personalize every message, and stop when a lead replies.</p>
+    <div class="buttons">
+      <a href="#live-demo" class="btn primary">Try the Live Demo →</a>
+      <a href="#process" class="btn secondary">See How It Works</a>
+    </div>
+    <div class="hero-card">
+      <div class="stat"><h2>AI</h2><p>Personalized outreach</p></div>
+      <div class="stat"><h2>24/7</h2><p>Automated follow-ups</p></div>
+      <div class="stat"><h2>n8n</h2><p>Reliable workflows</p></div>
+    </div>
+  </div>
+
+  <div class="demo-panel hidden" id="live-demo">
+    <div class="demo-head">
+      <div>
+        <span class="mini-label">LIVE PRODUCT DEMO</span>
+        <h2>See your follow-up get written.</h2>
+        <p>Enter a sample lead. The page will generate a realistic personalized message.</p>
+      </div>
+      <span class="live-pill">● LIVE</span>
+    </div>
+    <form id="demoForm">
+      <input id="demoName" type="text" placeholder="Lead name" required>
+      <input id="demoEmail" type="email" placeholder="Lead email" required>
+      <input id="demoCompany" type="text" placeholder="Company" required>
+      <input id="demoWebsite" type="text" placeholder="Website (optional)">
+      <textarea id="demoNeed" placeholder="What does the lead need?" required></textarea>
+      <button type="submit" id="demoBtn">Generate AI Follow-Up →</button>
+    </form>
+    <div class="demo-result" id="demoResult">
+      <div class="result-label">AI GENERATED FOLLOW-UP</div>
+      <div id="resultText">Your personalized follow-up will appear here.</div>
+    </div>
+  </div>
+</header>
+<!-- ========================= -->
+<!-- SERVICES -->
+<!-- ========================= -->
+
+<section id="services">
+
+<h2 class="title hidden">
+Services
+</h2>
+
+<p class="subtitle hidden">
+Automation solutions designed to eliminate repetitive work and help businesses scale.
+</p>
+
+<div class="grid-services">
+
+<div class="service hidden">
+
+<div class="icon">🤖</div>
+
+<h3>Custom n8n Workflows</h3>
+
+<p>
+Tailor-made workflow automations connecting your favourite apps, APIs and business processes.
+</p>
+
+</div>
+
+<div class="service hidden">
+
+<div class="icon">🔗</div>
+
+<h3>API Integrations</h3>
+
+<p>
+Connect CRMs, Google Workspace, Slack, Notion, Shopify and hundreds of other services.
+</p>
+
+</div>
+
+<div class="service hidden">
+
+<div class="icon">📈</div>
+
+<h3>Lead Generation</h3>
+
+<p>
+Automated prospect research, enrichment and outreach systems that generate qualified leads.
+</p>
+
+</div>
+
+<div class="service hidden">
+
+<div class="icon">🧠</div>
+
+<h3>AI Business Analyzer</h3>
+
+<p>
+Receive an AI-powered report identifying automation opportunities and business improvements.
+</p>
+
+</div>
+
+<div class="service hidden">
+
+<div class="icon">⚙️</div>
+
+<h3>CRM Automation</h3>
+
+<p>
+Automatically sync leads, send emails, create tasks and update your CRM without manual effort.
+</p>
+
+</div>
+
+<div class="service hidden">
+
+<div class="icon">⚡</div>
+
+<h3>Custom AI Solutions</h3>
+
+<p>
+Need something unique? I'll build a complete AI-powered workflow specifically for your business.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- PORTFOLIO -->
+<!-- ========================= -->
+
+<section id="portfolio">
+
+<h2 class="title hidden">
+
+Portfolio
+
+</h2>
+
+<p class="subtitle hidden">
+
+Real automation systems built to solve real business problems.
+
+</p>
+
+<div class="portfolio-grid">
+
+<div class="project hidden">
+
+<div class="project-top">
+
+🚀
+
+</div>
+
+<h3>AI Business Analyzer</h3>
+
+<p>
+
+Scans any business website and generates a professional automation report with ROI estimates and implementation opportunities.
+
+</p>
+
+<span>AI • Gemini • HTML Reports • n8n</span>
+
+</div>
+
+<div class="project hidden">
+
+<div class="project-top">
+
+📈
+
+</div>
+
+<h3>Lead Generation System</h3>
+
+<p>
+
+Automatically researches companies, enriches lead data and prepares personalized outreach.
+
+</p>
+
+<span>Lead Gen • APIs • CRM</span>
+
+</div>
+
+<div class="project hidden">
+
+<div class="project-top">
+
+📧
+
+</div>
+
+<h3>AI Email Assistant</h3>
+
+<p>
+
+Generate intelligent customer replies and automate repetitive email communication.
+
+</p>
+
+<span>AI • Gmail • Automation</span>
+
+</div>
+
+<div class="project hidden">
+
+<div class="project-top">
+
+🔄
+
+</div>
+
+<h3>CRM Automation</h3>
+
+<p>
+
+Automatically move leads between forms, CRMs, Slack and email with zero manual work.
+
+</p>
+
+<span>HubSpot • Slack • APIs</span>
+
+</div>
+
+<div class="project hidden">
+
+<div class="project-top">
+
+🌐
+
+</div>
+
+<h3>API Integration Hub</h3>
+
+<p>
+
+Connect multiple business platforms into one seamless automated workflow.
+
+</p>
+
+<span>REST APIs • Webhooks • n8n</span>
+
+</div>
+
+<div class="project hidden">
+
+<div class="project-top">
+
+🤖
+
+</div>
+
+<h3>Custom AI Agent</h3>
+
+<p>
+
+Intelligent AI assistants capable of handling repetitive business tasks and workflows.
+
+</p>
+
+<span>LLMs • AI Agents • Automation</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- ABOUT -->
+<!-- ========================= -->
+
+<section id="about">
+
+<h2 class="title hidden">
+
+About Kontrolled Automation
+
+</h2>
+
+<p class="subtitle hidden">
+
+Helping businesses work smarter with AI.
+
+</p>
+
+<div class="about-card hidden">
+
+<h3>
+
+Hi, I'm Vansh.
+
+</h3>
+
+<p>
+
+I'm the founder of <strong>Kontrolled Automation</strong>.
+
+I build custom AI-powered business automations that save companies time, reduce repetitive work and improve efficiency.
+
+Using modern AI models, n8n and API integrations, I create reliable workflow systems tailored specifically to your business needs.
+
+Whether you're looking to automate lead generation, CRM management, reporting or repetitive internal processes, my goal is simple:
+
+<strong>build automation that genuinely saves you time.</strong>
+
+</p>
+
+</div>
+
+</section>
+
+<style>
+
+/* ---------- SERVICES ---------- */
+
+.grid-services{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+gap:30px;
+
+}
+
+.service{
+
+background:rgba(17,28,47,.9);
+
+padding:35px;
+
+border-radius:22px;
+
+border:1px solid rgba(255,255,255,.05);
+
+transition:.4s;
+
+}
+
+.service:hover{
+
+transform:translateY(-10px);
+
+border-color:#8b5cf6;
+
+box-shadow:0 20px 50px rgba(56,189,248,.12);
+
+}
+
+.icon{
+
+font-size:42px;
+
+margin-bottom:20px;
+
+}
+
+.service h3{
+
+margin-bottom:15px;
+
+font-size:24px;
+
+}
+
+.service p{
+
+color:#a8a4c2;
+
+line-height:1.7;
+
+}
+
+/* ---------- PORTFOLIO ---------- */
+
+.portfolio-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+gap:28px;
+
+}
+
+.project{
+
+background:#15132d;
+
+padding:30px;
+
+border-radius:24px;
+
+transition:.35s;
+
+border:1px solid rgba(255,255,255,.05);
+
+}
+
+.project:hover{
+
+transform:translateY(-10px);
+
+border-color:#8b5cf6;
+
+}
+
+.project-top{
+
+font-size:50px;
+
+margin-bottom:18px;
+
+}
+
+.project h3{
+
+margin-bottom:15px;
+
+}
+
+.project p{
+
+color:#a8a4c2;
+
+line-height:1.7;
+
+margin-bottom:20px;
+
+}
+
+.project span{
+
+color:#8b5cf6;
+
+font-size:14px;
+
+font-weight:600;
+
+}
+
+/* ---------- ABOUT ---------- */
+
+.about-card{
+
+max-width:900px;
+
+margin:auto;
+
+background:#15132d;
+
+padding:45px;
+
+border-radius:24px;
+
+border:1px solid rgba(255,255,255,.05);
+
+line-height:2;
+
+font-size:18px;
+
+color:#cbd5e1;
+
+}
+
+.about-card h3{
+
+font-size:34px;
+
+margin-bottom:25px;
+
+color:white;
+
+}
+
+</style>
+<!-- ========================= -->
+<!-- HOW IT WORKS -->
+<!-- ========================= -->
+
+
+<section id="sales-engine">
+  <h2 class="title hidden">A sales system that keeps working.</h2>
+  <p class="subtitle hidden">Not another chatbot. A workflow designed around the part of sales teams often forget: consistent follow-up.</p>
+  <div class="grid-services">
+    <div class="service hidden"><div class="icon">✦</div><h3>AI Personalization</h3><p>Every follow-up is generated from the lead's name, company, website and actual business need.</p></div>
+    <div class="service hidden"><div class="icon">↻</div><h3>Automatic Sequences</h3><p>Send the first message, wait, follow up again, and keep the process moving without manual reminders.</p></div>
+    <div class="service hidden"><div class="icon">✓</div><h3>Reply-Aware Logic</h3><p>When a prospect responds, the sequence can stop so your team can take over the conversation.</p></div>
+  </div>
+</section>
+
+<section id="workflow-preview">
+  <h2 class="title hidden">From lead to conversation.</h2>
+  <p class="subtitle hidden">A simple automation underneath a polished customer experience.</p>
+  <div class="workflow hidden">
+    <div class="flow-node"><span>01</span><b>New Lead</b><small>Form / CRM / webhook</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node active"><span>02</span><b>AI Personalizes</b><small>Understands intent</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><span>03</span><b>Follow-Up</b><small>Personalized email</small></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node"><span>04</span><b>Reply Check</b><small>Stop or continue</small></div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="results-wrap hidden">
+    <div>
+      <span class="mini-label">THE OUTCOME</span>
+      <h2>Less chasing. More conversations.</h2>
+      <p>Instead of relying on someone to remember every follow-up, your workflow handles the repetitive part while your team focuses on qualified conversations.</p>
+    </div>
+    <div class="outcome-list">
+      <div><b>01</b><span>Every new enquiry gets a response.</span></div>
+      <div><b>02</b><span>Messages are personalized automatically.</span></div>
+      <div><b>03</b><span>Unresponsive leads receive structured follow-ups.</span></div>
+      <div><b>04</b><span>Human sales reps step in when it matters.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <h2 class="title hidden">Frequently Asked Questions</h2>
+  <div class="faq-grid">
+    <details class="hidden"><summary>Does this replace my sales team?</summary><p>No. It handles repetitive follow-up so your team can spend more time on actual conversations.</p></details>
+    <details class="hidden"><summary>Can it connect to my existing tools?</summary><p>Yes. The workflow can be connected to forms, email, CRMs and APIs through n8n.</p></details>
+    <details class="hidden"><summary>Can the messages be customized?</summary><p>Yes. The AI prompt and workflow rules can be tailored to your business, offer and sales process.</p></details>
+    <details class="hidden"><summary>What happens when a lead replies?</summary><p>The production workflow can detect the reply and stop the automated sequence so a human can take over.</p></details>
+  </div>
+</section>
+
+<section id="process">
+
+<h2 class="title hidden">
+
+How It Works
+
+</h2>
+
+<p class="subtitle hidden">
+
+A simple process designed to get your automation live quickly.
+
+</p>
+
+<div class="timeline">
+
+<div class="step hidden">
+
+<div class="circle">1</div>
+
+<h3>Discovery</h3>
+
+<p>
+
+We discuss your business, identify repetitive tasks and understand your goals.
+
+</p>
+
+</div>
+
+<div class="step hidden">
+
+<div class="circle">2</div>
+
+<h3>Planning</h3>
+
+<p>
+
+A workflow is designed specifically for your business requirements.
+
+</p>
+
+</div>
+
+<div class="step hidden">
+
+<div class="circle">3</div>
+
+<h3>Development</h3>
+
+<p>
+
+Your automation is built using n8n, APIs and AI tools.
+
+</p>
+
+</div>
+
+<div class="step hidden">
+
+<div class="circle">4</div>
+
+<h3>Testing</h3>
+
+<p>
+
+Every workflow is thoroughly tested before delivery.
+
+</p>
+
+</div>
+
+<div class="step hidden">
+
+<div class="circle">5</div>
+
+<h3>Deployment</h3>
+
+<p>
+
+Your automation is deployed and ready to save hours every week.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- WHY CHOOSE ME -->
+<!-- ========================= -->
+
+<section>
+
+<h2 class="title hidden">
+
+Why Choose Kontrolled Automation?
+
+</h2>
+
+<p class="subtitle hidden">
+
+More than just workflows — solutions that grow businesses.
+
+</p>
+
+<div class="why-grid">
+
+<div class="why-card hidden">
+
+<h3>⚡ Built For Businesses</h3>
+
+<p>
+
+Every automation is designed around solving real business problems—not just connecting apps.
+
+</p>
+
+</div>
+
+<div class="why-card hidden">
+
+<h3>🤖 AI Powered</h3>
+
+<p>
+
+Modern AI models integrated wherever they create genuine value.
+
+</p>
+
+</div>
+
+<div class="why-card hidden">
+
+<h3>🔒 Reliable</h3>
+
+<p>
+
+Scalable workflows that are easy to maintain and built for long-term use.
+
+</p>
+
+</div>
+
+<div class="why-card hidden">
+
+<h3>💬 Clear Communication</h3>
+
+<p>
+
+Fast responses, transparent updates and collaborative development.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- INDUSTRIES -->
+<!-- ========================= -->
+
+<section>
+
+<h2 class="title hidden">
+
+Industries We Help
+
+</h2>
+
+<p class="subtitle hidden">
+
+Automation works everywhere.
+
+</p>
+
+<div class="industry-grid">
+
+<div class="industry hidden">🏢 Agencies</div>
+
+<div class="industry hidden">🏠 Real Estate</div>
+
+<div class="industry hidden">💻 SaaS</div>
+
+<div class="industry hidden">📈 Marketing</div>
+
+<div class="industry hidden">🛒 E-commerce</div>
+
+<div class="industry hidden">💰 Finance</div>
+
+<div class="industry hidden">⚖️ Legal</div>
+
+<div class="industry hidden">🎓 Education</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- TESTIMONIALS -->
+<!-- ========================= -->
+
+<section>
+
+<h2 class="title hidden">
+
+Testimonials
+
+</h2>
+
+<p class="subtitle hidden">
+
+The best time to become my first client is now.
+
+</p>
+
+<div class="coming hidden">
+
+<h1>🚀</h1>
+
+<h2>Coming Soon</h2>
+
+<p>
+
+I'm currently building long-term relationships with businesses.
+
+Your success story could be featured here.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- PRICING -->
+<!-- ========================= -->
+
+<section>
+
+<h2 class="title hidden">
+
+Pricing
+
+</h2>
+
+<p class="subtitle hidden">
+
+Every project is unique.
+
+</p>
+
+<div class="pricing hidden">
+
+<h2>
+
+Custom Quote
+
+</h2>
+
+<p>
+
+Every automation project is different.
+
+Pricing depends on the complexity, integrations, AI requirements and workflow size.
+
+</p>
+
+<a href="#live-demo" class="btn primary">
+
+Request a Quote
+
+</a>
+
+</div>
+
+</section>
+
+<style>
+
+/* Timeline */
+
+.timeline{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+gap:30px;
+
+margin-top:50px;
+
+}
+
+.step{
+
+background:#15132d;
+
+padding:30px;
+
+border-radius:20px;
+
+text-align:center;
+
+transition:.35s;
+
+border:1px solid rgba(255,255,255,.05);
+
+}
+
+.step:hover{
+
+transform:translateY(-10px);
+
+border-color:#8b5cf6;
+
+}
+
+.circle{
+
+width:60px;
+
+height:60px;
+
+margin:auto;
+
+margin-bottom:20px;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:24px;
+
+font-weight:bold;
+
+background:linear-gradient(135deg,#8b5cf6,#5b4bff);
+
+}
+
+/* Why */
+
+.why-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+gap:25px;
+
+}
+
+.why-card{
+
+background:#15132d;
+
+padding:35px;
+
+border-radius:22px;
+
+transition:.35s;
+
+}
+
+.why-card:hover{
+
+transform:translateY(-8px);
+
+border:1px solid #8b5cf6;
+
+}
+
+/* Industries */
+
+.industry-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+gap:20px;
+
+}
+
+.industry{
+
+background:#15132d;
+
+padding:25px;
+
+border-radius:18px;
+
+text-align:center;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.industry:hover{
+
+background:#8b5cf6;
+
+color:#070617;
+
+transform:scale(1.05);
+
+}
+
+/* Testimonials */
+
+.coming{
+
+max-width:700px;
+
+margin:auto;
+
+text-align:center;
+
+background:#15132d;
+
+padding:60px;
+
+border-radius:25px;
+
+}
+
+.coming h1{
+
+font-size:70px;
+
+margin-bottom:15px;
+
+}
+
+.coming h2{
+
+font-size:36px;
+
+margin-bottom:20px;
+
+}
+
+/* Pricing */
+
+.pricing{
+
+max-width:700px;
+
+margin:auto;
+
+background:#15132d;
+
+padding:60px;
+
+border-radius:25px;
+
+text-align:center;
+
+}
+
+.pricing h2{
+
+font-size:38px;
+
+margin-bottom:20px;
+
+}
+
+.pricing p{
+
+color:#a8a4c2;
+
+line-height:1.8;
+
+margin-bottom:35px;
+
+}
+
+</style>
+<!-- ========================= -->
+<!-- CONTACT -->
+<!-- ========================= -->
+
+<section id="contact">
+
+<h2 class="title hidden">
+
+Let's Build Something Amazing
+
+</h2>
+
+<p class="subtitle hidden">
+
+Ready to automate your business?
+
+</p>
+
+<div class="contact-card hidden">
+
+<div class="contact-item">
+
+<h3>📧 Email</h3>
+
+<a href="mailto:vanshmehra1811@gmail.com">
+
+vanshmehra1811@gmail.com
+
+</a>
+
+</div>
+
+<div class="contact-item">
+
+<h3>📞 Call / SMS</h3>
+
+<a href="tel:+918796250051">
+
++91 8796250051
+
+</a>
+
+<p class="note">
+
+(Call or SMS only)
+
+</p>
+
+</div>
+
+<div class="contact-item">
+
+<h3>💻 GitHub</h3>
+
+<a href="https://github.com/V-920" target="_blank">
+
+github.com/V-920
+
+</a>
+
+<p class="note">
+
+Explore my automation projects and source code.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- FOOTER -->
+<!-- ========================= -->
+
+<footer>
+
+<h2>
+
+Kontrolled Automation
+
+</h2>
+
+<p>
+
+AI • n8n • APIs • Workflow Automation
+
+</p>
+
+<div class="footer-links">
+
+<a href="#">Home</a>
+
+<a href="#services">Services</a>
+
+<a href="#portfolio">Portfolio</a>
+
+<a href="#about">About</a>
+
+<a href="https://github.com/V-920" target="_blank">
+
+GitHub
+
+</a>
+
+<a href="#contact">Contact</a>
+
+</div>
+
+<p class="copyright">
+
+© 2026 Kontrolled Automation
+
+</p>
+
+</footer>
+
+<style>
+
+/* CONTACT */
+
+.contact-card{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+
+gap:30px;
+
+margin-top:60px;
+
+}
+
+.contact-item{
+
+background:#15132d;
+
+padding:40px;
+
+border-radius:22px;
+
+transition:.35s;
+
+text-align:center;
+
+border:1px solid rgba(255,255,255,.05);
+
+}
+
+.contact-item:hover{
+
+transform:translateY(-10px);
+
+border-color:#8b5cf6;
+
+box-shadow:0 20px 50px rgba(56,189,248,.15);
+
+}
+
+.contact-item h3{
+
+margin-bottom:20px;
+
+}
+
+.contact-item a{
+
+color:#8b5cf6;
+
+text-decoration:none;
+
+font-size:18px;
+
+}
+
+.note{
+
+margin-top:15px;
+
+font-size:14px;
+
+color:#a8a4c2;
+
+}
+
+/* FOOTER */
+
+footer{
+
+padding:80px 8%;
+
+text-align:center;
+
+border-top:1px solid rgba(255,255,255,.05);
+
+margin-top:100px;
+
+}
+
+footer h2{
+
+font-size:34px;
+
+margin-bottom:20px;
+
+background:linear-gradient(90deg,#8b5cf6,#4f9cff);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+footer p{
+
+color:#a8a4c2;
+
+margin-bottom:25px;
+
+}
+
+.footer-links{
+
+display:flex;
+
+justify-content:center;
+
+gap:30px;
+
+flex-wrap:wrap;
+
+margin-bottom:30px;
+
+}
+
+.footer-links a{
+
+color:white;
+
+text-decoration:none;
+
+transition:.3s;
+
+}
+
+.footer-links a:hover{
+
+color:#8b5cf6;
+
+}
+
+.copyright{
+
+font-size:14px;
+
+color:#64748b;
+
+}
+
+</style>
+
+<script>
+
+/* Scroll Reveal */
+
+const observer = new IntersectionObserver((entries)=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.classList.add("show");
+
+}
+
+});
+
+},{threshold:0.15});
+
+document.querySelectorAll(".hidden").forEach(el=>observer.observe(el));
+
+/* Navbar Blur */
+
+window.addEventListener("scroll",()=>{
+
+const nav=document.querySelector("nav");
+
+if(window.scrollY>50){
+
+nav.style.background="rgba(8,17,31,.9)";
+
+nav.style.boxShadow="0 8px 30px rgba(0,0,0,.25)";
+
+}
+
+else{
+
+nav.style.background="rgba(8,17,31,.45)";
+
+nav.style.boxShadow="none";
+
+}
+
+});
+
+/* Card Tilt */
+
+document.querySelectorAll(".service,.project,.why-card,.step,.industry,.contact-item").forEach(card=>{
+
+card.addEventListener("mousemove",(e)=>{
+
+const rect=card.getBoundingClientRect();
+
+const x=e.clientX-rect.left;
+
+const y=e.clientY-rect.top;
+
+const rotateX=(y-rect.height/2)/18;
+
+const rotateY=(rect.width/2-x)/18;
+
+card.style.transform=`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+
+});
+
+card.addEventListener("mouseleave",()=>{
+
+card.style.transform="perspective(1000px) rotateX(0) rotateY(0) scale(1)";
+
+});
+
+});
+
+</script>
+
+
+<script>
+const demoForm=document.getElementById('demoForm');
+const demoResult=document.getElementById('demoResult');
+const resultText=document.getElementById('resultText');
+const demoBtn=document.getElementById('demoBtn');
+
+demoForm?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const name=document.getElementById('demoName').value.trim();
+  const company=document.getElementById('demoCompany').value.trim();
+  const need=document.getElementById('demoNeed').value.trim();
+  const website=document.getElementById('demoWebsite').value.trim();
+  demoBtn.disabled=true;
+  demoBtn.textContent='AI is writing…';
+  resultText.textContent='Analyzing the lead and creating a personalized follow-up…';
+  await new Promise(r=>setTimeout(r,900));
+  resultText.textContent=`Hi ${name.split(' ')[0]},\n\nI wanted to follow up on your enquiry about ${need.toLowerCase()}. Based on what you shared about ${company}, I’d be happy to explore a practical way to automate this and reduce the manual work involved.\n\nWould you be open to a quick conversation this week?`;
+  demoBtn.disabled=false;
+  demoBtn.textContent='Generate Another Follow-Up →';
+});
+</script>
+</body>
+
+</html>
