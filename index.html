@@ -478,6 +478,72 @@ padding-top:170px;
   .results-wrap h2{font-size:32px}
 }
 </style>
+<style>
+/* DEMO LAYOUT FIX */
+.hero {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  gap: 50px;
+}
+
+.hero-content {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.demo-panel {
+  width: 100%;
+  max-width: 520px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.demo-panel form {
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.demo-panel input,
+.demo-panel textarea,
+.demo-panel button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    display: block;
+    width: 100%;
+    padding-left: 8%;
+    padding-right: 8%;
+  }
+
+  .hero-content {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 45px;
+  }
+
+  .demo-panel {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .demo-panel form {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-panel textarea,
+  .demo-panel button {
+    grid-column: auto;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -1875,26 +1941,62 @@ card.style.transform="perspective(1000px) rotateX(0) rotateY(0) scale(1)";
 
 </script>
 
-
 <script>
-const demoForm=document.getElementById('demoForm');
-const demoResult=document.getElementById('demoResult');
-const resultText=document.getElementById('resultText');
-const demoBtn=document.getElementById('demoBtn');
+const demoForm = document.getElementById('demoForm');
+const resultText = document.getElementById('resultText');
+const demoBtn = document.getElementById('demoBtn');
 
-demoForm?.addEventListener('submit', async (e)=>{
+demoForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name=document.getElementById('demoName').value.trim();
-  const company=document.getElementById('demoCompany').value.trim();
-  const need=document.getElementById('demoNeed').value.trim();
-  const website=document.getElementById('demoWebsite').value.trim();
-  demoBtn.disabled=true;
-  demoBtn.textContent='AI is writing…';
-  resultText.textContent='Analyzing the lead and creating a personalized follow-up…';
-  await new Promise(r=>setTimeout(r,900));
-  resultText.textContent=`Hi ${name.split(' ')[0]},\n\nI wanted to follow up on your enquiry about ${need.toLowerCase()}. Based on what you shared about ${company}, I’d be happy to explore a practical way to automate this and reduce the manual work involved.\n\nWould you be open to a quick conversation this week?`;
-  demoBtn.disabled=false;
-  demoBtn.textContent='Generate Another Follow-Up →';
+
+  const name = document.getElementById('demoName').value.trim();
+  const email = document.getElementById('demoEmail').value.trim();
+  const company = document.getElementById('demoCompany').value.trim();
+  const website = document.getElementById('demoWebsite').value.trim();
+  const goal = document.getElementById('demoNeed').value.trim();
+
+  demoBtn.disabled = true;
+  demoBtn.textContent = 'AI is writing…';
+
+  resultText.textContent =
+    'Connecting to the AI automation…';
+
+  try {
+    const response = await fetch(
+      'http://localhost:5678/webhook-test/sales-followup',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          Name: name,
+          Email: email,
+          Company: company,
+          Website: website,
+          Goal: goal
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    resultText.textContent =
+      data.email || data.output || 'No AI response was returned.';
+
+  } catch (error) {
+    console.error(error);
+
+    resultText.textContent =
+      'Something went wrong connecting to the AI workflow. Please try again.';
+  }
+
+  demoBtn.disabled = false;
+  demoBtn.textContent = 'Generate Another Follow-Up →';
 });
 </script>
 </body>
