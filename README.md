@@ -107,4 +107,8 @@ You can host the static front end on GitHub Pages or another static hosting prov
 
 ## License
 
-Add a license file before distributing or accepting contributions. Until a license is added, the repository's code is not automatically granted an open-source license.
+Copyright (c) 2026 Kontrolled. All Rights Reserved.
+
+Unauthorized copying, modification, distribution, or use of this software, 
+via any medium, is strictly prohibited without the express written permission 
+of Kontrolled.
