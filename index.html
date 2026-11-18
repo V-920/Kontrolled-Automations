@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#08090b">
+<meta name="description" content="Kontrolled turns your idea into a connected website and automation workflow.">
+<title>Kontrolled Automations</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="kontrolled-k-mark.png" type="image/png">
+</head>
+<body>
+<canvas id="universe" aria-hidden="true"></canvas>
+<header class="wrap">
+  <a class="logo" href="#" aria-label="Kontrolled Automations home"><img src="kontrolled-k-mark.png" alt=""><span class="logo-word">Kontrolled<small>AUTOMATIONS</small></span></a>
+  <nav class="nav"><a href="#builder">Build something</a><a href="#how">How it works</a><a href="#contact">Contact</a></nav>
+  <a class="nav-cta" href="#builder">Get started ↗</a>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="pill"><span></span> ONE IDEA. TWO CONNECTED BUILDS.</div>
+  <h1>Your idea,<br><em>working together.</em></h1>
+  <p class="hero-copy">Create the website and the automation behind it in one go. Enter your vision, and get both outputs connected and ready to use.</p>
+  <div class="hero-actions"><a class="btn light" href="#builder">Create your build <span>↗</span></a><a class="btn" href="#how">See how it works</a></div>
+  <div class="hero-visual">
+    <div class="windowbar"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span class="window-title">KONTROLLED / BUILD PREVIEW</span></div>
+    <div class="preview">
+      <div class="preview-card"><div class="preview-label">01 / FRONTEND</div><strong>Your website</strong><p>A polished interface designed around your product and users.</p><div class="preview-foot"><span>index.html</span><span>↗</span></div></div>
+      <div class="preview-card"><div class="preview-label">02 / AUTOMATION</div><strong>Your workflow</strong><p>The n8n logic that powers the experience behind the scenes.</p><div class="preview-foot"><span>workflow.json</span><span>↗</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap" id="builder">
+  <div class="section-head"><div><div class="kicker">01 / Your brief</div><h2>One brief. A complete system.</h2></div><p class="intro">Describe what people should experience and what should happen behind the scenes. Kontrolled turns both into one connected deliverable.</p></div>
+  <div class="builder">
+    <div class="builder-top"><strong>Project builder</strong><span class="step-label">BOTH PROMPTS REQUIRED</span></div>
+    <div class="prompt-grid">
+      <div class="prompt-card">
+        <div class="prompt-head"><b>Website brief</b><span>FRONTEND / 01</span></div>
+        <label for="websitePrompt">WHAT SHOULD THE WEBSITE DO?</label>
+        <textarea id="websitePrompt" placeholder="Describe the website, its audience, pages, features and visual style. Example: A booking site for a local studio with service listings, a booking form and a confirmation screen."></textarea>
+        <div class="microcopy">Tip: mention the pages, user actions and design direction.</div>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-head"><b>Workflow brief</b><span>AUTOMATION / 02</span></div>
+        <label for="workflowPrompt">WHAT SHOULD HAPPEN BEHIND THE SCENES?</label>
+        <textarea id="workflowPrompt" placeholder="Describe the automation and how it connects to the website. Example: When a visitor submits the booking form, check availability, save the booking and send a confirmation email."></textarea>
+        <div class="microcopy">Tip: include triggers, integrations, data and expected outcomes.</div>
+      </div>
+    </div>
+    <div class="builder-bottom">
+      <div class="privacy">One submission creates a paired website and n8n workflow. The generated website should call the workflow using the webhook URL configured by your n8n setup.</div>
+      <button class="generate" id="generateBtn">Generate connected project ↗</button>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <div class="results" id="results">
+      <h3>Your project files are ready.</h3>
+      <p>Download both files. Import the workflow JSON into n8n, configure credentials and activate it. Then deploy the website.</p>
+      <div class="downloads"><a class="download" id="htmlDownload" download="index.html">↓ Download index.html</a><a class="download" id="jsonDownload" download="workflow.json">↓ Download workflow.json</a></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section wrap" id="capabilities">
+  <div class="section-head"><div><div class="kicker">02 / What you get</div><h2>Designed to work as one.</h2></div><p class="intro">The frontend is the experience. The workflow is the engine. The generated project is designed to connect the two.</p></div>
+  <div class="preview" style="padding:0">
+    <div class="preview-card"><div class="preview-label">THE EXPERIENCE</div><strong>A website made for your use case.</strong><p>Purpose-built pages, interface elements and interactions shaped by your brief.</p></div>
+    <div class="preview-card"><div class="preview-label">THE ENGINE</div><strong>An automation built around the experience.</strong><p>An n8n workflow that receives the right data, handles the task and returns the result.</p></div>
+  </div>
+</section>
+
+<section class="how" id="how"><div class="wrap">
+  <div class="kicker">03 / How it works</div><h2 style="font-size:clamp(32px,5vw,48px);letter-spacing:-.06em;margin:10px 0 0">One brief. One connected result.</h2>
+  <div class="steps">
+    <div class="step"><small>01 — DESCRIBE</small><h3>Define both sides</h3><p>Explain what visitors should experience and what the automation should do in response.</p></div>
+    <div class="step"><small>02 — GENERATE</small><h3>Create the connection</h3><p>Your combined brief is sent once to n8n, where your generation logic creates the matching files.</p></div>
+    <div class="step"><small>03 — DOWNLOAD</small><h3>Launch your project</h3><p>Download the website HTML and workflow JSON, then configure and deploy them.</p></div>
+  </div>
+</div></section>
+
+<section class="closing wrap"><div class="kicker">MAKE THE IDEA REAL</div><h2>Stop stitching tools together. Start building systems.</h2><p>Your next project can start with two clear descriptions.</p><div style="margin-top:24px"><a class="btn light" href="#builder">Build with Kontrolled ↗</a></div></section>
+</main>
+
+<footer id="contact"><div class="wrap">
+  <div class="foot-top"><div><a class="logo" href="#" aria-label="Kontrolled Automations home"><img src="kontrolled-k-mark.png" alt=""><span class="logo-word">Kontrolled<small>AUTOMATIONS</small></span></a><p class="foot-copy">Thoughtful websites. Useful automations. Connected by design.</p></div>
+  <div class="links">
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">All links ↗</a>
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">Discord</a>
+    <a href="https://linktr.ee/kontrolled_" target="_blank" rel="noopener">Email</a>
+  </div></div>
+  <div class="foot-bottom"><span>© <span id="year"></span> Kontrolled. All rights reserved.</span><span>Built for ideas in motion.</span></div>
+</div></footer>
+
+
+
+
+
+<script src="script.js" defer></script>
+</body>
+</html>
