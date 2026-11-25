@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Local n8n setup &mdash; Kontrolled
+  </title>
+  <link href="../styles.css?v=3" rel="stylesheet"/>
+ </head>
+ <body>
+  <header class="wrap app-header">
+   <a class="logo" href="/">
+    <img alt="" src="/assets/kontrolled-k-mark.png"/>
+    <span class="logo-word">
+     Kontrolled
+     <small>
+      LOCAL SETUP
+     </small>
+    </span>
+   </a>
+   <nav class="nav">
+    <a href="/">
+     Home
+    </a>
+    <a href="/automation.html">
+     Automation
+    </a>
+   </nav>
+  </header>
+  <main class="wrap">
+   <section class="page-hero">
+    <div class="pill">
+     LOCAL DEPLOYMENT GUIDE
+    </div>
+    <h1>
+     Your n8n.
+     <br/>
+     <em>
+      On your computer.
+     </em>
+    </h1>
+    <p class="hero-copy">
+     This development setup runs n8n in Docker and uses the Kontrolled Companion to install workflows through the n8n API.
+    </p>
+   </section>
+   <section class="builder">
+    <h2>
+     Before you start
+    </h2>
+    <ul>
+     <li>
+      Windows, macOS or Linux with Docker Desktop / Docker Engine installed.
+     </li>
+     <li>
+      Node.js 20.11 or later.
+     </li>
+     <li>
+      The Kontrolled project folder.
+     </li>
+     <li>
+      Keep your computer awake while scheduled automations need to run.
+     </li>
+    </ul>
+    <h2>
+     1. Start n8n
+    </h2>
+    <p>
+     From the project directory, run:
+    </p>
+    <pre><code>docker compose up -d</code></pre>
+    <p>
+     Open
+     <a href="http://127.0.0.1:5678">
+      http://127.0.0.1:5678
+     </a>
+     and complete n8n's owner-account setup.
+    </p>
+    <h2>
+     2. Create an n8n API key
+    </h2>
+    <p>
+     In n8n, open your personal settings and create an API key. Treat it like a password. Do not share it or commit it to source control.
+    </p>
+    <h2>
+     3. Configure Kontrolled
+    </h2>
+    <p>
+     The project includes a configured
+     <code>
+      .env
+     </code>
+     file. Its generator webhook is set to
+     <code>http://localhost:5678/webhook/automation-factory</code>
+     . Copy the value of
+     <code>
+      KONTROLLED_ACCESS_TOKEN
+     </code>
+     from that file into the Automation Builder's Developer access settings. Paste the n8n API key into
+     <code>
+      LOCAL_N8N_API_KEY
+     </code>
+     .
+    </p>
+    <h2>
+     4. Start Kontrolled
+    </h2>
+    <pre><code>npm start</code></pre>
+    <p>
+     In another terminal, start the companion:
+    </p>
+    <pre><code>npm run companion</code></pre>
+    <p>
+     Open
+     <a href="http://127.0.0.1:3000">
+      http://127.0.0.1:3000
+     </a>
+     , go to Automation, enter your backend access token in Developer access settings, then connect the local companion using the companion token from
+     <code>
+      .env
+     </code>
+     .
+    </p>
+    <h2>
+     5. Deploy and review
+    </h2>
+    <p>
+     Generate or import a workflow, validate it, then deploy locally. Kontrolled creates it inactive. Open n8n, connect any required credentials, inspect every node, test the workflow and activate it yourself when satisfied.
+    </p>
+    <div class="notice">
+     <strong>
+      Limitations:
+     </strong>
+     Local workflows run only while your computer and Docker service are running. Webhook triggers that must receive requests from the public internet need a secure, reachable webhook URL or tunnel. Do not expose the n8n editor or Docker socket directly to the internet. This local setup is a developer MVP, not a one-click installer.
+    </div>
+    <p>
+     <a class="btn primary" href="/automation.html">
+      Back to Automation Builder &nearrow;
+     </a>
+    </p>
+   </section>
+  </main>
+  <footer>
+   <div class="wrap foot-bottom">
+    <a href="/">
+     &larr; Kontrolled
+    </a>
+    <span>
+     &copy; 2026 Kontrolled
+    </span>
+   </div>
+  </footer>
+ </body>
+</html>
+

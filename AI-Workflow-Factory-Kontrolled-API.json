@@ -1,0 +1,444 @@
+{
+  "name": "AI Factory - Improved",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "automation-factory",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "d42fa02e-81ae-4c78-8c87-701c08d5e97e",
+      "name": "Webhook",
+      "webhookId": "365d23b3-ab24-4cd1-a332-bf35931ad0c9",
+      "notes": "POST JSON with a non-empty `prompt` field. This webhook has no authentication configured; before public production use, configure suitable webhook authentication and access controls."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=USER REQUEST:\n{{ $json.body.prompt }}\n\nYou are the Kontrolled Automations n8n Workflow Builder. Build a COMPLETE, operationally detailed n8n workflow. Do not produce an architectural sketch.\n\nWORK IN THIS ORDER (internally):\n1. Decompose the request into every distinct trigger, action, condition, transformation, integration, output, and error-handling requirement.\n2. Design the full execution path, including branches, loops, batching, pagination, data mapping, and failure paths when the request needs them.\n3. Select real n8n node types and configure their resource, operation, required parameters, expressions, and connections.\n4. Audit the finished workflow against every requirement before returning it.\n\nOUTPUT CONTRACT: Return one JSON object matching the connected Structured Output Parser schema: {\"workflow\": <complete importable n8n workflow JSON>, \"requirements\": [...], \"implementationSummary\": \"...\"}. The workflow property alone must be importable n8n workflow JSON. The requirements array must list every user requirement and identify the exact workflow node name(s) implementing it.\n\nIMPLEMENTATION RULES:\n- Every requested operation must be implemented by the correct real node. A node merely existing is not implementation: configure its actual resource, operation, required parameters, and input mappings.\n- Use native n8n nodes where appropriate. Use AI only when the requested task requires AI.\n- Never substitute NoOp or an unrelated Code node for a requested integration/action. Set/Edit Fields is allowed only for genuine data transformation or mapping.\n- Use a valid trigger appropriate to the request. Connect all operational nodes into the intended execution path.\n- Implement requested conditions as actual IF/Switch branches and connect both required outcomes. Implement requested loops/batches/pagination as actual control flow.\n- Use expressions that reference data actually produced by upstream nodes. Do not invent fields or pretend data exists.\n- Do not invent credentials, secrets, account IDs, spreadsheet IDs, email addresses, API endpoints, or other account-specific values. Create the correct node and leave account-specific settings for the user when unavailable. Clearly distinguish configuration the user must supply from completed logic.\n- Use current node types and supported parameters. If exact node configuration is uncertain, do not fabricate parameters; prefer a known native node configuration or make the limitation explicit in implementationSummary.\n- Include appropriate error handling when required by the request or necessary to prevent silent failure. Do not add unrelated complexity.\n- Keep the workflow simple only by removing unnecessary complexity, NEVER by omitting required implementation detail.\n\nFINAL SELF-CHECK:\n- Every requirement from the prompt appears in requirements.\n- Every requirement maps to one or more existing node names in implementedBy.\n- Every mapped node actually performs the stated operation.\n- All node names are unique; all nodes have name, type, typeVersion, position, parameters.\n- All connections use valid n8n connection structure and reference existing nodes.\n- The trigger-to-action execution path is complete; no required node is disconnected.\n- The workflow is a JSON object, not a JSON string.\nReturn the schema object only; no Markdown or commentary.\n\nSTRICT RESPONSE FORMAT: Return the structured object directly. Do not wrap it in Markdown, do not use ```json fences, and do not add prose before or after it.\n\nAI PROVIDER POLICY (MANDATORY): Google Gemini is the only permitted AI/LLM provider. For every language-model connection, use the n8n Google Gemini Chat Model node type `@n8n/n8n-nodes-langchain.lmChatGoogleGemini`. Use the configured default model `models/gemini-3.5-flash-lite` unless the user explicitly requests a different Gemini model. Never create OpenAI, Anthropic, OpenRouter, Groq, or any other non-Gemini model node. This restriction applies to AI model providers, not ordinary integrations such as email, databases, spreadsheets, messaging, or APIs. If a requested AI capability is not supported by the selected Gemini model or available n8n nodes, state the limitation instead of silently switching providers.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a senior n8n workflow engineer. Produce complete, importable n8n workflow JSON plus a requirement-to-node audit wrapper, following the output schema exactly. Prioritize functional completeness over minimal node count. Never claim a requirement is implemented unless the workflow contains a correctly configured node and valid execution path for it. Never invent credentials, secrets, account-specific IDs, endpoints, or unsupported node parameters. Keep workflow JSON inside the `workflow` property; keep requirement metadata outside it. Validate every node, parameter, expression, branch, and connection before returning. Google Gemini is the only permitted LLM provider. Every language-model node must be `@n8n/n8n-nodes-langchain.lmChatGoogleGemini`; never substitute another provider."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        256,
+        -96
+      ],
+      "id": "c19f4ca6-c373-42f4-b8c1-a529ec373e4c",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"workflow\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\",\n          \"minLength\": 1\n        },\n        \"nodes\": {\n          \"type\": \"array\",\n          \"minItems\": 2,\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"name\": {\n                \"type\": \"string\",\n                \"minLength\": 1\n              },\n              \"type\": {\n                \"type\": \"string\",\n                \"minLength\": 1\n              },\n              \"typeVersion\": {\n                \"type\": \"number\"\n              },\n              \"position\": {\n                \"type\": \"array\",\n                \"minItems\": 2,\n                \"maxItems\": 2,\n                \"items\": {\n                  \"type\": \"number\"\n                }\n              },\n              \"parameters\": {\n                \"type\": \"object\"\n              },\n              \"id\": {\n                \"type\": \"string\"\n              },\n              \"credentials\": {\n                \"type\": \"object\"\n              },\n              \"disabled\": {\n                \"type\": \"boolean\"\n              },\n              \"notes\": {\n                \"type\": \"string\"\n              },\n              \"onError\": {\n                \"type\": \"string\"\n              }\n            },\n            \"required\": [\n              \"name\",\n              \"type\",\n              \"typeVersion\",\n              \"position\",\n              \"parameters\"\n            ],\n            \"additionalProperties\": true\n          }\n        },\n        \"connections\": {\n          \"type\": \"object\"\n        },\n        \"settings\": {\n          \"type\": \"object\"\n        },\n        \"pinData\": {\n          \"type\": \"object\"\n        },\n        \"meta\": {\n          \"type\": \"object\"\n        },\n        \"tags\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"id\": {\n                \"type\": \"string\"\n              },\n              \"name\": {\n                \"type\": \"string\"\n              }\n            },\n            \"required\": [\n              \"name\"\n            ]\n          }\n        }\n      },\n      \"required\": [\n        \"name\",\n        \"nodes\",\n        \"connections\"\n      ],\n      \"additionalProperties\": true\n    },\n    \"requirements\": {\n      \"type\": \"array\",\n      \"minItems\": 1,\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"description\": {\n            \"type\": \"string\"\n          },\n          \"implementedBy\": {\n            \"type\": \"array\",\n            \"minItems\": 1,\n            \"items\": {\n              \"type\": \"string\"\n            }\n          },\n          \"expectedNodeTypes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            }\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"description\",\n          \"implementedBy\"\n        ],\n        \"additionalProperties\": true\n      }\n    },\n    \"implementationSummary\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"workflow\",\n    \"requirements\",\n    \"implementationSummary\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        128
+      ],
+      "id": "87a7802c-b5df-4d5e-8e64-33a684f9af1a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        64
+      ],
+      "id": "7b8da722-ac64-4248-b789-d3798c4ccd7b",
+      "name": "Google Gemini Chat Model",
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "options": {},
+        "modelName": "models/gemini-3.5-flash-lite"
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        256
+      ],
+      "id": "c2dba7a1-3845-4f88-8a23-cd36ee503a4c",
+      "name": "Google Gemini Chat Model1",
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nlet data = item.json;\n\n// Unwrap common AI Agent output envelopes without losing the raw response.\nif (data && typeof data === 'object' && data.output !== undefined) data = data.output;\n\nfunction extractJsonText(value) {\n  let text = String(value ?? '').replace(/^\\uFEFF/, '').trim();\n  if (!text) throw new Error('AI returned an empty response.');\n\n  // Remove a complete Markdown code fence, including ```json.\n  const fenced = text.match(/^```(?:json)?\\s*([\\s\\S]*?)\\s*```$/i);\n  if (fenced) text = fenced[1].trim();\n\n  // If prose surrounds the JSON, isolate the first balanced JSON object.\n  if (!text.startsWith('{')) {\n    const start = text.indexOf('{');\n    if (start < 0) throw new Error('No JSON object was found in the AI response.');\n    let depth = 0, inString = false, escaped = false, end = -1;\n    for (let i = start; i < text.length; i++) {\n      const ch = text[i];\n      if (inString) {\n        if (escaped) escaped = false;\n        else if (ch === '\\\\') escaped = true;\n        else if (ch === '\"') inString = false;\n      } else {\n        if (ch === '\"') inString = true;\n        else if (ch === '{') depth++;\n        else if (ch === '}') {\n          depth--;\n          if (depth === 0) { end = i + 1; break; }\n        }\n      }\n    }\n    if (end < 0) throw new Error('The AI response contains an incomplete JSON object.');\n    text = text.slice(start, end);\n  }\n  return text;\n}\n\nif (typeof data === 'string') {\n  try {\n    data = JSON.parse(extractJsonText(data));\n  } catch (e) {\n    return [{json:{\n      valid:false,\n      errors:['AI output could not be parsed as JSON: ' + String(e)],\n      workflow:null,\n      requirements:[],\n      rawOutput:String(data).slice(0,12000)\n    }}];\n  }\n}\n\n// Some integrations wrap the parsed result one additional time.\nif (data && typeof data === 'object' && data.output !== undefined) {\n  let nested = data.output;\n  if (typeof nested === 'string') {\n    try { nested = JSON.parse(extractJsonText(nested)); }\n    catch (e) {\n      return [{json:{valid:false,errors:['Nested AI output could not be parsed: '+String(e)],workflow:null,requirements:[]}}];\n    }\n  }\n  data = nested;\n}\n\n// Accept the structured wrapper; also diagnose a direct workflow object.\nconst workflow = data && data.workflow && typeof data.workflow === 'object' ? data.workflow : data;\nconst requirements = Array.isArray(data && data.requirements) ? data.requirements : [];\nconst errors = [];\n\nif (!workflow || typeof workflow !== 'object' || Array.isArray(workflow)) {\n  errors.push('Output must contain a workflow object.');\n}\nif (workflow && typeof workflow === 'object') {\n  if (typeof workflow.name !== 'string' || !workflow.name.trim()) errors.push('Workflow name is missing.');\n  if (!Array.isArray(workflow.nodes) || workflow.nodes.length < 2) errors.push('Workflow must contain at least two nodes.');\n  if (!workflow.connections || typeof workflow.connections !== 'object' || Array.isArray(workflow.connections)) errors.push('connections must be an object.');\n}\n\nconst nodes = workflow && Array.isArray(workflow.nodes) ? workflow.nodes : [];\nconst names = new Set();\nconst duplicateNames = new Set();\n\nfor (const [i, n] of nodes.entries()) {\n  if (!n || typeof n !== 'object' || Array.isArray(n)) {\n    errors.push(`Node at index ${i} is not an object.`);\n    continue;\n  }\n  for (const key of ['name','type','typeVersion','position','parameters']) {\n    if (n[key] === undefined || n[key] === null) errors.push(`Node ${i} is missing ${key}.`);\n  }\n  if (typeof n.name === 'string') {\n    if (names.has(n.name)) duplicateNames.add(n.name);\n    names.add(n.name);\n  }\n  if (typeof n.position !== 'undefined' &&\n      (!Array.isArray(n.position) || n.position.length !== 2 || !n.position.every(Number.isFinite))) {\n    errors.push(`Node \"${n.name || i}\" has an invalid position.`);\n  }\n  if (n.parameters !== undefined &&\n      (!n.parameters || typeof n.parameters !== 'object' || Array.isArray(n.parameters))) {\n    errors.push(`Node \"${n.name || i}\" parameters must be an object.`);\n  }\n}\nfor (const name of duplicateNames) errors.push(`Duplicate node name: \"${name}\".`);\n\nconst nodeNames = new Set(nodes.map(n => n && n.name).filter(v => typeof v === 'string'));\nconst connections = workflow && workflow.connections && typeof workflow.connections === 'object'\n  ? workflow.connections : {};\n\nfor (const [source, outputs] of Object.entries(connections)) {\n  if (!nodeNames.has(source)) errors.push(`Connection source \"${source}\" does not exist.`);\n  if (!outputs || typeof outputs !== 'object' || Array.isArray(outputs)) {\n    errors.push(`Connections for \"${source}\" must be an object.`);\n    continue;\n  }\n  for (const [connectionType, branches] of Object.entries(outputs)) {\n    if (!Array.isArray(branches)) {\n      errors.push(`\"${source}\" connection \"${connectionType}\" must contain an array of branches.`);\n      continue;\n    }\n    for (const [branchIndex, branch] of branches.entries()) {\n      if (!Array.isArray(branch)) {\n        errors.push(`\"${source}\" connection \"${connectionType}\" branch ${branchIndex} is invalid.`);\n        continue;\n      }\n      for (const connection of branch) {\n        if (!connection || typeof connection !== 'object') {\n          errors.push(`Invalid connection from \"${source}\".`);\n          continue;\n        }\n        if (!connection.node || !nodeNames.has(connection.node)) {\n          errors.push(`Connection from \"${source}\" points to missing node \"${connection.node || ''}\".`);\n        }\n        if (connection.type !== connectionType) {\n          errors.push(`Connection from \"${source}\" has type \"${connection.type}\" but is stored under \"${connectionType}\".`);\n        }\n        if (!Number.isInteger(connection.index) || connection.index < 0) {\n          errors.push(`Connection from \"${source}\" to \"${connection.node}\" has an invalid index.`);\n        }\n      }\n    }\n  }\n}\n\n// Detect trigger nodes case-insensitively (e.g. chatTrigger).\nconst triggerNodes = nodes.filter(n => {\n  if (!n || typeof n.type !== 'string') return false;\n  const type = n.type.toLowerCase();\n  return type.includes('trigger') ||\n    type === 'n8n-nodes-base.webhook' ||\n    type === 'n8n-nodes-base.manualtrigger' ||\n    type === 'n8n-nodes-base.scheduletrigger';\n});\nif (nodes.length && triggerNodes.length === 0) errors.push('No recognizable trigger node was found.');\n\n// n8n AI sub-node connections are stored FROM the sub-node TO the parent\n// agent (for example, Gemini Model -> AI Agent). For reachability, the\n// sub-node is a dependency OF the reachable parent, so add a reverse\n// dependency edge for ai_* connections while preserving normal main edges.\nconst adjacency = new Map();\nfunction addEdge(from, to) {\n  if (!adjacency.has(from)) adjacency.set(from, []);\n  adjacency.get(from).push(to);\n}\nfor (const [source, outputs] of Object.entries(connections)) {\n  if (!outputs || typeof outputs !== 'object' || Array.isArray(outputs)) continue;\n  for (const [connectionType, branches] of Object.entries(outputs)) {\n    if (!Array.isArray(branches)) continue;\n    for (const branch of branches) {\n      if (!Array.isArray(branch)) continue;\n      for (const edge of branch) {\n        if (!edge || typeof edge.node !== 'string' || !nodeNames.has(edge.node)) continue;\n        if (connectionType === 'main') {\n          addEdge(source, edge.node);\n        } else if (connectionType.startsWith('ai_')) {\n          // Invert AI dependency direction for traversal only.\n          addEdge(edge.node, source);\n        }\n      }\n    }\n  }\n}\n\nconst reachable = new Set();\nconst queue = triggerNodes.map(n => n.name);\nwhile (queue.length) {\n  const current = queue.shift();\n  if (!current || reachable.has(current)) continue;\n  reachable.add(current);\n  for (const target of (adjacency.get(current) || [])) {\n    if (!reachable.has(target)) queue.push(target);\n  }\n}\nfor (const n of nodes) {\n  if (n && n.name && !reachable.has(n.name)) {\n    errors.push(`Node \"${n.name}\" is not reachable from a trigger through execution flow or an attached AI dependency.`);\n  }\n}\n\n// Enforce Gemini-only language models and require every AI Agent to have\n// an incoming Gemini language-model connection.\nfor (const n of nodes) {\n  if (n && typeof n.type === 'string' && n.type.includes('.lmChat') &&\n      n.type !== '@n8n/n8n-nodes-langchain.lmChatGoogleGemini') {\n    errors.push(`Non-Gemini language model \"${n.name}\" is not allowed. Use Google Gemini Chat Model.`);\n  }\n}\nconst agentNodes = nodes.filter(n => n && typeof n.type === 'string' &&\n  n.type === '@n8n/n8n-nodes-langchain.agent');\nfor (const agent of agentNodes) {\n  const attachedModels = [];\n  for (const [source, outputs] of Object.entries(connections)) {\n    const branches = outputs && outputs.ai_languageModel;\n    if (!Array.isArray(branches)) continue;\n    for (const branch of branches) {\n      if (!Array.isArray(branch)) continue;\n      if (branch.some(edge => edge && edge.node === agent.name)) {\n        attachedModels.push(nodes.find(n => n && n.name === source));\n      }\n    }\n  }\n  if (attachedModels.length === 0) {\n    errors.push(`AI Agent \"${agent.name}\" has no connected language model.`);\n  } else if (attachedModels.some(m => !m || m.type !== '@n8n/n8n-nodes-langchain.lmChatGoogleGemini')) {\n    errors.push(`AI Agent \"${agent.name}\" must use Google Gemini Chat Model only.`);\n  }\n}\n\n// Requirement coverage is mandatory for the generated wrapper.\nif (!Array.isArray(data && data.requirements) || requirements.length === 0) {\n  errors.push('The AI did not return a non-empty requirements list.');\n} else {\n  for (const [i, req] of requirements.entries()) {\n    if (!req || typeof req !== 'object' || !req.id || !req.description ||\n        !Array.isArray(req.implementedBy) || req.implementedBy.length === 0) {\n      errors.push(`Requirement ${i + 1} is missing id, description, or implementedBy.`);\n      continue;\n    }\n    const mappedNodes = [];\n    for (const nodeName of req.implementedBy) {\n      const mapped = nodes.find(n => n && n.name === nodeName);\n      if (!mapped) errors.push(`Requirement \"${req.id}\" references missing node \"${nodeName}\".`);\n      else {\n        mappedNodes.push(mapped);\n        if (!reachable.has(nodeName)) errors.push(`Requirement \"${req.id}\" references node \"${nodeName}\" that is not connected to the trigger through execution flow or an attached AI dependency.`);\n      }\n    }\n    if (Array.isArray(req.expectedNodeTypes) && req.expectedNodeTypes.length > 0 &&\n        !mappedNodes.some(n => req.expectedNodeTypes.includes(n.type))) {\n      errors.push(`Requirement \"${req.id}\" expects one of node types [${req.expectedNodeTypes.join(', ')}], but none of its implementedBy nodes has an allowed type.`);\n    }\n  }\n}\n\nreturn [{json:{\n  valid:errors.length === 0,\n  errors,\n  workflow:workflow || null,\n  requirements,\n  implementationSummary:data && data.implementationSummary ? data.implementationSummary : ''\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "d567a2c2-5b6a-41b1-beb0-26deb59c2771",
+      "name": "Validate Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ecf1f623-8c5b-47c6-bfd6-be0ab528e5ee",
+              "leftValue": "={{ $json.valid || $runIndex >= 2 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        944,
+        -96
+      ],
+      "id": "67e302dd-fdcd-41f2-a922-1856213778ca",
+      "name": "If",
+      "notes": "Stops after two repair passes. A valid result is returned immediately; otherwise the final response reports validation errors."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.valid ? { success: true, workflow: $json.workflow, requirements: $json.requirements, implementationSummary: $json.implementationSummary } : { success: false, message: \"Workflow generation failed validation after the maximum repair attempts.\", errors: $json.errors, requirements: $json.requirements, workflow: null } }}",
+        "options": {},
+        "responseCode": "={{ $json.valid ? 200 : 422 }}"
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1168,
+        -112
+      ],
+      "id": "81034b65-a5e6-4b52-969a-e85c98c4d4c7",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the Kontrolled Automations n8n Workflow Repair Engineer. Repair the complete workflow, not just its JSON shape.\n\nORIGINAL USER REQUEST:\n{{ $('Webhook').first().json.body.prompt }}\n\nVALIDATION ERRORS:\n{{ JSON.stringify($json.errors, null, 2) }}\n\nREQUIREMENT AUDIT:\n{{ JSON.stringify($json.requirements, null, 2) }}\n\nWORKFLOW TO REPAIR:\n{{ JSON.stringify($json.workflow, null, 2) }}\n\nReturn the same structured wrapper required by the Repair Output Parser: {\"workflow\": <complete importable n8n workflow JSON>, \"requirements\": [...], \"implementationSummary\": \"...\"}.\n\nRepair instructions:\n1. Fix every listed validation error.\n2. Re-read the original request and ensure every requested operation is implemented, not merely represented by a node.\n3. Preserve working nodes and intended behavior. Add missing nodes and connections when required; do not delete functionality to make validation pass.\n4. Every node must have a unique name, valid type, typeVersion, two-number position, and parameters object.\n5. Use correct n8n connection types and structure. Main execution connections use `main`; AI model/parser/tool links use their correct `ai_*` connection types.\n6. Keep all required operational nodes connected to the trigger execution path. Keep AI sub-nodes connected to the agent that uses them.\n7. Configure actual resource, operation, required parameters, and expressions. A bare node is not an implementation.\n8. Never invent credentials, secrets, account IDs, email addresses, spreadsheet IDs, endpoints, or unsupported parameters.\n9. Update requirements.implementedBy so every requirement maps to real node names in the repaired workflow. Preserve all original requirements; do not omit difficult ones.\n10. Return a complete wrapper object, not a string. No Markdown or commentary.\n\nSTRICT RESPONSE FORMAT: Return the structured object directly. Do not wrap it in Markdown, do not use ```json fences, and do not add prose before or after it.\n\nAI PROVIDER POLICY (MANDATORY): Use Google Gemini only for every language-model connection (`@n8n/n8n-nodes-langchain.lmChatGoogleGemini`). Do not create or retain OpenAI, Anthropic, OpenRouter, Groq, or other non-Gemini model nodes. Ordinary service integrations are still allowed. If the requested capability cannot be implemented with Gemini and available n8n nodes, explain the limitation in implementationSummary.",
+        "options": {
+          "systemMessage": "You are a senior n8n workflow repair engineer. Repair functional omissions as well as structural errors. The original user request and requirement audit are authoritative. Preserve the intended automation and all valid functionality. Do not make the workflow appear valid by deleting requirements or required nodes. Return exactly the structured wrapper expected by the connected parser. Never invent credentials, secrets, account-specific IDs, endpoints, or unsupported node parameters. Google Gemini is the only permitted LLM provider. Never use another model provider."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1152,
+        0
+      ],
+      "id": "5e163e8a-ad6e-421a-b01b-0a8957506625",
+      "name": "Fix Workflow",
+      "retryOnFail": false,
+      "executeOnce": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        176
+      ],
+      "id": "43f082de-afbe-4a0c-8bed-1c62c7979e11",
+      "name": "Google Gemini Chat Model2",
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"workflow\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"name\": {\n          \"type\": \"string\",\n          \"minLength\": 1\n        },\n        \"nodes\": {\n          \"type\": \"array\",\n          \"minItems\": 2,\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"name\": {\n                \"type\": \"string\",\n                \"minLength\": 1\n              },\n              \"type\": {\n                \"type\": \"string\",\n                \"minLength\": 1\n              },\n              \"typeVersion\": {\n                \"type\": \"number\"\n              },\n              \"position\": {\n                \"type\": \"array\",\n                \"minItems\": 2,\n                \"maxItems\": 2,\n                \"items\": {\n                  \"type\": \"number\"\n                }\n              },\n              \"parameters\": {\n                \"type\": \"object\"\n              },\n              \"id\": {\n                \"type\": \"string\"\n              },\n              \"credentials\": {\n                \"type\": \"object\"\n              },\n              \"disabled\": {\n                \"type\": \"boolean\"\n              },\n              \"notes\": {\n                \"type\": \"string\"\n              },\n              \"onError\": {\n                \"type\": \"string\"\n              }\n            },\n            \"required\": [\n              \"name\",\n              \"type\",\n              \"typeVersion\",\n              \"position\",\n              \"parameters\"\n            ],\n            \"additionalProperties\": true\n          }\n        },\n        \"connections\": {\n          \"type\": \"object\"\n        },\n        \"settings\": {\n          \"type\": \"object\"\n        },\n        \"pinData\": {\n          \"type\": \"object\"\n        },\n        \"meta\": {\n          \"type\": \"object\"\n        },\n        \"tags\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"object\",\n            \"properties\": {\n              \"id\": {\n                \"type\": \"string\"\n              },\n              \"name\": {\n                \"type\": \"string\"\n              }\n            },\n            \"required\": [\n              \"name\"\n            ]\n          }\n        }\n      },\n      \"required\": [\n        \"name\",\n        \"nodes\",\n        \"connections\"\n      ],\n      \"additionalProperties\": true\n    },\n    \"requirements\": {\n      \"type\": \"array\",\n      \"minItems\": 1,\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\"\n          },\n          \"description\": {\n            \"type\": \"string\"\n          },\n          \"implementedBy\": {\n            \"type\": \"array\",\n            \"minItems\": 1,\n            \"items\": {\n              \"type\": \"string\"\n            }\n          },\n          \"expectedNodeTypes\": {\n            \"type\": \"array\",\n            \"items\": {\n              \"type\": \"string\"\n            }\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"description\",\n          \"implementedBy\"\n        ],\n        \"additionalProperties\": true\n      }\n    },\n    \"implementationSummary\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"workflow\",\n    \"requirements\",\n    \"implementationSummary\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1408,
+        176
+      ],
+      "id": "21e2941e-6611-4183-a267-d2ce5e23afc0",
+      "name": "Repair Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1ca1e06d-f371-47f6-a6a7-a996afd8e8fe",
+              "leftValue": "={{ typeof $json.body?.prompt === 'string' && $json.body.prompt.trim().length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        160,
+        -96
+      ],
+      "id": "80790d98-b987-4439-a530-834b2b78d40c",
+      "name": "Validate Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: \"Request body must contain a non-empty string field named 'prompt'.\" } }}",
+        "options": {},
+        "responseCode": 400
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        384,
+        160
+      ],
+      "id": "cb688888-4973-4474-9f6c-38f6461f684b",
+      "name": "Respond Invalid Request",
+      "notes": "Returns HTTP 400 when the webhook request has no usable prompt."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: $json.error?.message || $json.message || \"AI generation or repair failed. Check the Gemini credential, model availability, and quota.\" } }}",
+        "options": {},
+        "responseCode": 502
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        224
+      ],
+      "id": "8ccee0bc-b361-42dd-b14c-edd5256958c7",
+      "name": "Respond Generation Error",
+      "notes": "Returns HTTP 502 when the upstream AI/model operation fails."
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Repair Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Validate Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Generation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Workflow": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fix Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fix Workflow",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix Workflow": {
+      "main": [
+        [
+          {
+            "node": "Validate Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Generation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Repair Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Fix Workflow",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Invalid Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "195130c7-324f-4ce0-9b70-fd2b39387fe1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d5e15f706fa2d8d38a52b438a277b025aa0f018e63de4b7be95e5f18573a4b13",
+    "factoryAuditVersion": "2.3",
+    "factoryAuditNotes": "Gemini-only model policy; validates required webhook input; validates node-type expectations; correctly traverses main execution edges and reverse AI sub-node dependencies; enforces Gemini language models and bounded repair. Adds explicit HTTP 502 responses for AI generation/repair failures."
+  },
+  "nodeGroups": [],
+  "id": "CyyyRQCYEVguFbUH",
+  "tags": []
+}

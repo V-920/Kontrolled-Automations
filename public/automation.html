@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#080706" name="theme-color"/>
+  <meta content="Generate, configure and deploy n8n automations with Kontrolled." name="description"/>
+  <title>
+   Automation Builder &mdash; Kontrolled
+  </title>
+  <link href="/assets/kontrolled-k-mark.png" rel="icon"/>
+  <link href="./styles.css?v=3" rel="stylesheet"/>
+  <script defer="" src="/automation.js">
+  </script>
+ </head>
+ <body>
+  <canvas aria-hidden="true" id="universe">
+  </canvas>
+  <header class="wrap app-header">
+   <a class="logo" href="/">
+    <img alt="" src="/assets/kontrolled-k-mark.png"/>
+    <span class="logo-word">
+     Kontrolled
+     <small>
+      BUILD / AUTOMATE
+     </small>
+    </span>
+   </a>
+   <nav class="nav">
+    <a href="/">
+     Home
+    </a>
+    <a class="active" href="/automation.html">
+     Automation
+    </a>
+    <a href="/website-builder.html">
+     Website Builder
+    </a>
+   </nav>
+   <a class="nav-cta" href="#create">
+    Create workflow &nearrow;
+   </a>
+  </header>
+  <main>
+   <section class="page-hero wrap">
+    <div class="pill">
+     <span>
+     </span>
+     AUTOMATION BUILDER / POWERED BY N8N
+    </div>
+    <h1>
+     Make work
+     <br/>
+     <em>
+      happen automatically.
+     </em>
+    </h1>
+    <p class="hero-copy">
+     Describe the process. Kontrolled's AI Workflow Factory builds and checks the n8n workflow, then guides you through setup and deployment to your own n8n.
+    </p>
+   </section>
+   <section class="generator-wrap wrap" id="create">
+    <div class="builder">
+     <details class="access-settings">
+      <summary>
+       Developer access settings
+       <span>
+        Only needed for this private development build
+       </span>
+      </summary>
+      <div class="field-group">
+       <label for="accessToken">
+        KONTROLLED BACKEND ACCESS TOKEN
+       </label>
+       <input autocomplete="off" id="accessToken" placeholder="Paste KONTROLLED_ACCESS_TOKEN from your .env file" type="password"/>
+       <p class="microcopy">
+        This temporary shared-token gate is for local testing, not public customer accounts. The token stays in this browser session.
+       </p>
+      </div>
+     </details>
+     <div class="builder-top">
+      <strong>
+       01 / Describe your automation
+      </strong>
+      <span class="step-label">
+       AI WORKFLOW FACTORY
+      </span>
+     </div>
+     <div class="field-group">
+      <label for="prompt">
+       WHAT SHOULD HAPPEN AUTOMATICALLY?
+      </label>
+      <textarea id="prompt" maxlength="6000" placeholder="Example: When a new lead submits my website form, add their name, email and message to Google Sheets, send me an email notification, and send the lead a confirmation email."></textarea>
+      <div class="microcopy">
+       For a stronger result, mention the trigger, apps involved, steps, conditions and what should happen if something fails.
+       <span id="promptCount">
+        0 / 6000
+       </span>
+      </div>
+     </div>
+     <div class="action-row">
+      <button class="btn primary" id="generateBtn" type="button">
+       Generate workflow &nearrow;
+      </button>
+      <button class="btn" id="exampleBtn" type="button">
+       Use an example
+      </button>
+      <span aria-live="polite" class="status" id="generateStatus" role="status">
+       Your prompt is processed by your connected n8n AI Workflow Factory.
+      </span>
+     </div>
+     <div aria-live="polite" class="result-card hidden" id="generationResult">
+     </div>
+     <div class="result-card hidden" id="configurationPanel">
+     </div>
+     <div class="divider-line">
+     </div>
+     <div class="builder-top">
+      <strong>
+       02 / Review or import a workflow
+      </strong>
+      <span class="step-label">
+       VALIDATE BEFORE DEPLOY
+      </span>
+     </div>
+     <div class="field-group">
+      <label for="workflowJson">
+       N8N WORKFLOW JSON
+      </label>
+      <textarea class="code-input" id="workflowJson" placeholder="Your generated workflow will appear here. You can also paste an existing n8n workflow JSON file." spellcheck="false"></textarea>
+      <p class="microcopy">
+       Kontrolled checks the workflow's structure and connections. Always review node actions and permissions in n8n before activating.
+      </p>
+     </div>
+     <div class="action-row">
+      <button class="btn" id="validateBtn" type="button">
+       Validate workflow
+      </button>
+      <button class="btn" disabled="" id="downloadBtn" type="button">
+       Download JSON
+      </button>
+      <label class="btn" for="workflowFile" style="margin:0;cursor:pointer">
+       Import JSON file
+      </label>
+      <input accept="application/json,.json" hidden="" id="workflowFile" type="file"/>
+      <span class="status" id="validationStatus" role="status">
+       No workflow loaded yet.
+      </span>
+     </div>
+     <div class="summary-panel hidden" id="workflowSummary">
+     </div>
+    </div>
+   </section>
+   <section class="section wrap" id="deploy">
+    <div class="section-head">
+     <div>
+      <div class="kicker">
+       03 / Choose where it runs
+      </div>
+      <h2>
+       Your n8n. Your choice.
+      </h2>
+     </div>
+     <p class="intro">
+      Deploy to an n8n instance you already use, or install n8n locally on this computer with the Kontrolled Companion.
+     </p>
+    </div>
+    <div class="deploy-grid">
+     <article class="deploy-card">
+      <div class="deploy-icon">
+       ☁
+      </div>
+      <div class="preview-label">
+       REMOTE DEPLOYMENT
+      </div>
+      <h3>
+       Connect existing n8n
+      </h3>
+      <p>
+       For n8n Cloud or a self-hosted instance with HTTPS and API access. Your API key is sent to the Kontrolled backend, not stored in browser code.
+      </p>
+      <label for="instanceUrl">
+       YOUR N8N INSTANCE URL
+      </label>
+      <input autocomplete="url" id="instanceUrl" placeholder="https://your-instance.app.n8n.cloud" type="url"/>
+      <label for="apiKey">
+       N8N API KEY
+      </label>
+      <input autocomplete="off" id="apiKey" placeholder="Paste your n8n API key" type="password"/>
+      <button class="btn" id="connectRemoteBtn" type="button">
+       Test connection
+      </button>
+      <div class="status" id="remoteStatus" role="status">
+       Not connected.
+      </div>
+      <button class="btn primary" disabled="" id="deployRemoteBtn" type="button">
+       Deploy to my n8n
+      </button>
+     </article>
+     <article class="deploy-card">
+      <div class="deploy-icon">
+       ⌂
+      </div>
+      <div class="preview-label">
+       LOCAL DEPLOYMENT
+      </div>
+      <h3>
+       Run n8n on this computer
+      </h3>
+      <p>
+       Install n8n with Docker, start the Kontrolled Companion and pair it with this browser. Your workflows execute on your computer.
+      </p>
+      <label for="companionUrl">
+       COMPANION ADDRESS
+      </label>
+      <input id="companionUrl" type="url" value="http://127.0.0.1:4317"/>
+      <label for="companionToken">
+       COMPANION PAIRING TOKEN
+      </label>
+      <input autocomplete="off" id="companionToken" placeholder="From your companion .env file" type="password"/>
+      <button class="btn" id="connectLocalBtn" type="button">
+       Connect local companion
+      </button>
+      <div class="status" id="localStatus" role="status">
+       Companion not connected.
+      </div>
+      <button class="btn primary" disabled="" id="deployLocalBtn" type="button">
+       Deploy locally
+      </button>
+      <a class="microcopy" href="/docs/local-setup.html">
+       Need help setting up local n8n? Read the setup guide &nearrow;
+      </a>
+     </article>
+    </div>
+    <div class="notice">
+     <strong>
+      Before activation:
+     </strong>
+     Kontrolled creates workflows inactive. Review each node, connect credentials inside n8n, test the workflow and activate it yourself. Never paste third-party account passwords into Kontrolled.
+    </div>
+   </section>
+  </main>
+  <footer>
+   <div class="wrap foot-bottom">
+    <a href="/">
+     &larr; Back to Kontrolled
+    </a>
+    <span>
+     &copy;
+     <span id="year">
+     </span>
+     Kontrolled
+    </span>
+   </div>
+  </footer>
+   <script defer="" src="/home.js"></script>
+</body>
+</html>
+

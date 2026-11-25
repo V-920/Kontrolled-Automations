@@ -1,0 +1,21 @@
+{
+  "name": "kontrolled-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Kontrolled workflow generation and n8n deployment foundation",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "companion": "node companion/index.js",
+    "test": "node --test",
+    "format": "prettier --write \"server/**/*.js\" \"companion/**/*.js\" \"public/**/*.js\" \"tests/**/*.js\" \"public/**/*.html\" \"public/**/*.css\"",
+    "format:check": "prettier --check \"server/**/*.js\" \"companion/**/*.js\" \"public/**/*.js\" \"tests/**/*.js\" \"public/**/*.html\" \"public/**/*.css\""
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  }
+}

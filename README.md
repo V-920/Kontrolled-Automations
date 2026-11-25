@@ -1,114 +1,95 @@
-# Kontrolled Automations
+# Kontrolled — Automation + Website Builder
 
-Kontrolled Automations is a front-end project for a connected website and n8n workflow builder. Users provide two briefs—one for a website and one for an automation workflow—and submit them together to a configured n8n webhook.
+Kontrolled provides two separate creation experiences:
 
-> **Project status:** The front end is a starter integration. You must configure the n8n webhook and implement the workflow-generation logic before end-to-end generation will work.
+1. **Automation Builder** — sends a prompt to the user's n8n AI Workflow Factory, validates the returned workflow, and deploys it inactive to either a remote n8n instance or local n8n through the Kontrolled Companion.
+2. **Website Builder** — sends a website brief to a separate n8n webhook and supports sandbox preview and HTML download.
 
-## Features
+n8n remains the only automation engine. Kontrolled does not execute workflows.
 
-- Black-and-gold visual design.
-- Responsive layout for desktop and mobile screens.
-- Animated particle-and-constellation background with pointer interaction.
-- Separate inputs for the website brief and workflow brief.
-- Both briefs are submitted together in one request.
-- Download controls for the generated `index.html` and `workflow.json` response files.
-- Modular source files: HTML, CSS, and JavaScript are kept separate.
+## Requirements
 
-## Project structure
+- Node.js 20.11+
+- n8n instance with public API enabled
+- For local deployment: Docker Compose and a local n8n API key
 
-```text
-kontrolled-automations/
-├── index.html
-├── style.css
-├── script.js
-├── kontrolled-k-mark.png
-└── README.md
+## Run the Kontrolled backend
+
+A configured `.env` file is included. It already points `GENERATOR_WEBHOOK_URL` to `http://localhost:5678/webhook/automation-factory`. The access and companion tokens are generated for this project copy. Paste the value of `KONTROLLED_ACCESS_TOKEN` into the Automation Builder's Developer access settings. Add your n8n API key to `LOCAL_N8N_API_KEY` only if you use the local Companion deployment feature.
+
+```bash
+npm start
 ```
 
-Keep the logo image in the same project folder as `index.html`, unless you update its path in the HTML.
+Open http://127.0.0.1:3000.
 
-## Run locally
+For local development, the UI's **Developer access settings** accepts `KONTROLLED_ACCESS_TOKEN`. This is a temporary shared-token gate, not customer authentication. Do not expose this MVP as a public multi-user service.
 
-1. Download or clone this repository.
-2. Keep all project files in the same folder.
-3. Open `index.html` in a modern browser.
+## Configure the AI Workflow Factory
 
-No build step is required for the static front end.
+1. Import `AI-Workflow-Factory-Kontrolled-API.json` into your n8n instance. This is the supplied factory with its successful response adjusted to preserve the `workflow`, `requirements`, and `implementationSummary` fields. Your original factory export remains unchanged outside this project.
+2. Configure its Google Gemini credentials and confirm the selected Gemini model is available in your n8n installation.
+3. Activate the workflow.
+4. The included `.env` already sets `GENERATOR_WEBHOOK_URL=http://localhost:5678/webhook/automation-factory`. This is the n8n Production URL on the same computer, not a public URL.
+5. Restart Kontrolled after changing `.env`.
 
-## Configure the n8n webhook
+The backend accepts the factory's structured wrapper and derives a basic configuration manifest from node credential references and trigger nodes. This is a starting point: users still authorize app credentials inside their own n8n instance. Factory validation is not a security audit or proof that a generated workflow is semantically correct.
 
-1. Create an n8n workflow with a Webhook trigger.
-2. Configure the webhook to accept a `POST` request.
-3. Copy the production webhook URL.
-4. Open `script.js` and replace the placeholder `N8N_WEBHOOK_URL` with your URL.
-5. Configure the workflow to process both prompts and return the generated website HTML and workflow JSON.
-6. Activate the n8n workflow and test the site.
+## Website Builder
 
-Do not publish private credentials in the front-end code. A webhook URL embedded in browser JavaScript is visible to visitors, so use appropriate validation, rate limiting, and access controls in your backend.
+Set `WEBSITE_GENERATOR_WEBHOOK_URL` to a separate n8n webhook that accepts `{ "prompt": "...", "request_type": "website", "source": "kontrolled" }` and returns `{ "html": "<!doctype html>..." }`. The AI Workflow Factory supplied here generates n8n workflows only; it is not the website generator.
 
-## Request format
+## Remote n8n deployment
 
-The front end sends both prompts in one JSON request:
+The Automation Builder accepts an HTTPS n8n instance URL and API key. The API key is sent to the backend and kept in process memory for up to 30 minutes in this development build. Workflow creation uses the n8n public API and creates workflows inactive. The connection store is volatile and is not a production credential vault.
 
-```json
-{
-  "website_prompt": "Describe the website to generate",
-  "workflow_prompt": "Describe the n8n automation to generate",
-  "request_type": "connected_website_and_workflow",
-  "source": "kontrolled"
-}
+## Local n8n deployment
+
+1. Use the included `.env`; configure `N8N_ENCRYPTION_KEY` before using the local deployment setup in a different environment.
+2. Run `docker compose up -d` to start n8n on loopback port 5678.
+3. Complete n8n's owner setup and create an n8n API key.
+4. Set `LOCAL_N8N_API_KEY` and a unique `COMPANION_TOKEN` in `.env`.
+5. Start Kontrolled with `npm start`.
+6. In another terminal, run `npm run companion`.
+7. Open the Automation Builder, connect the companion and deploy.
+
+Full instructions: `/docs/local-setup.html`.
+
+Local scheduled workflows run only while the computer and Docker service are running. Public webhook triggers require a reachable endpoint. Do not expose the n8n editor, Docker socket or local API directly to the public internet.
+
+## API endpoints
+
+- `GET /api/health`
+- `POST /api/access/check`
+- `POST /api/generate`
+- `POST /api/generate/website`
+- `POST /api/workflows/validate`
+- `POST /api/connections/test`
+- `POST /api/deploy/remote`
+
+Protected routes require `X-Kontrolled-Token: <KONTROLLED_ACCESS_TOKEN>`.
+
+## Important MVP limitations
+
+- Shared access token is for local development only; production needs real user authentication and per-user authorization.
+- Remote connection credentials are held in server memory only; production needs encrypted persistent secret storage, audit logs, tenant isolation and revocation.
+- Local companion uses a pairing token and loopback binding; production needs stronger pairing, origin validation and signed short-lived deployment requests.
+- The website builder needs its own n8n generation workflow and is not supplied by the AI Workflow Factory file.
+- Deployment creates inactive workflows. Credential creation, semantic testing and activation remain customer-controlled.
+- Review n8n's current licensing and OEM terms for your intended commercial distribution model before launch.
+
+## Code formatting
+
+Install the development dependency once, then format the project consistently:
+
+```bash
+npm install
+npm run format
+npm run format:check
 ```
 
-## Expected response
+## Tests
 
-The front end expects a JSON response containing the generated HTML and workflow data. The primary field names are:
-
-```json
-{
-  "html": "<!doctype html>...",
-  "workflow": {
-    "name": "Generated workflow",
-    "nodes": [],
-    "connections": {}
-  }
-}
+```bash
+npm test
 ```
-
-The integration may also accept the alternate field names supported by the current `script.js` implementation, such as `index_html`, `website_html`, or `workflow_json`. Keep the n8n response aligned with the parser in `script.js`.
-
-The workflow object should be valid n8n workflow JSON for the n8n version where it will be imported. Review generated workflows before activating them.
-
-## Architecture
-
-- **`index.html`** — page structure and links to the stylesheet and JavaScript.
-- **`style.css`** — layout, responsive styling, theme, and visual effects.
-- **`script.js`** — animation, form handling, webhook request, response parsing, and file downloads.
-- **`kontrolled-k-mark.png`** — brand mark used by the page.
-- **`README.md`** — project documentation.
-
-## Customization
-
-- Change colors, typography, spacing, and responsive breakpoints in `style.css`.
-- Change page copy and structural sections in `index.html`.
-- Change the webhook URL, request handling, animation settings, and download parsing in `script.js`.
-- Replace `kontrolled-k-mark.png` with your own logo, keeping the filename or updating the reference in `index.html`.
-
-## Deployment
-
-You can host the static front end on GitHub Pages or another static hosting provider. The n8n workflow must be hosted separately and reachable from the deployed site. Configure CORS on the webhook/backend as needed for your site's domain.
-
-## Security and limitations
-
-- The browser-based front end does not itself generate websites or n8n workflows; that work must be implemented in n8n or another backend.
-- Do not put API keys, passwords, or other secrets in `index.html` or `script.js`.
-- Treat generated HTML and workflow JSON as untrusted output. Inspect and test them before use.
-- Add server-side validation, request limits, and abuse protection before making the generator publicly available.
-- The webhook must return the response shape expected by the front end.
-
-## License
-
-Copyright (c) 2026 Kontrolled. All Rights Reserved.
-
-Unauthorized copying, modification, distribution, or use of this software, 
-via any medium, is strictly prohibited without the express written permission 
-of Kontrolled.
