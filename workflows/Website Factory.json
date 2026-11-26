@@ -1,0 +1,556 @@
+{
+  "name": "Website Factory",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "website-factory",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        272
+      ],
+      "id": "ae2e276d-26da-4653-a97f-dbee854e675a",
+      "name": "Webhook",
+      "webhookId": "d8f4614e-5a8d-49fb-809e-5c1f7305342c",
+      "notes": "POST JSON with a non-empty `prompt` field. Returns a downloadable single-file HTML website. Configure suitable webhook authentication and access controls before exposing publicly."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=USER REQUEST:\n{{ $json.body.prompt }}\n\nYou are the Kontrolled Website Builder, the website-generation component of Kontrolled Automations.\n\nMISSION:\nCreate a complete, polished, working website as ONE downloadable HTML file. The user is asking for a website, not an n8n workflow or automation.\n\nWORK IN THIS ORDER (internally):\n1. Understand the user's goal, target audience, content, requested pages/sections, style, interactions, and responsive requirements.\n2. Plan the page structure and visual hierarchy.\n3. Implement the complete website using semantic HTML5, embedded CSS, and embedded JavaScript.\n4. Audit the result against every requirement before returning it.\n\nOUTPUT CONTRACT:\nReturn one JSON object matching the connected Structured Output Parser schema:\n{\n  \"html\": \"<complete HTML document>\",\n  \"title\": \"Website title\",\n  \"requirements\": [\n    {\n      \"id\": \"R1\",\n      \"description\": \"User requirement in concise form\",\n      \"implementedIn\": [\"#hero\", \".pricing\", \"navigation\"]\n    }\n  ],\n  \"implementationSummary\": \"Brief summary of what was built\"\n}\nThe `html` property must contain the entire standalone HTML document, not a fragment, explanation, Markdown, or code fence.\n\nIMPLEMENTATION RULES:\n- Produce a complete HTML5 document beginning with <!DOCTYPE html> and containing html, head, and body elements.\n- Put all CSS in one or more embedded <style> elements in the document head.\n- Put all JavaScript in embedded <script> elements. Do not require a separate CSS or JS file.\n- Make the website responsive for mobile, tablet, and desktop.\n- Use semantic elements, accessible labels, useful alt text, keyboard-friendly controls, and sensible contrast.\n- Implement requested front-end interactions, navigation, menus, tabs, accordions, calculators, filters, and other UI behaviors when relevant.\n- Use realistic, coherent copy tailored to the user's prompt. Avoid generic placeholder text and lorem ipsum.\n- Give the page a considered visual identity: typography, spacing, layout, color system, states, and responsive behavior should feel intentional.\n- Use external image/font URLs only when they materially improve the requested site; do not invent credentials, private endpoints, or account-specific data.\n- Do not claim that a form, login, payment, database, email, or other server-side capability works unless a real backend integration is included in the requested deliverable. For frontend-only forms, provide clear demo behavior or explain that backend connection is required.\n- Do not include build tooling, package managers, frameworks that require compilation, or separate project files. The deliverable is one .html file that can be opened directly in a browser.\n- Avoid unnecessary dependencies. Prefer native browser APIs and vanilla JavaScript.\n- Do not include secrets, tracking code, hidden data collection, or unsafe browser behavior.\n- Do not invent real customer testimonials, certifications, business claims, or factual statistics. Use clearly fictional sample content only when the prompt calls for mock/demo content.\n- Return all requested sections and functionality. Do not silently omit difficult requirements.\n- If a requested feature cannot be delivered in a standalone frontend file, implement the best honest frontend representation and explain the backend/integration limitation in implementationSummary.\n\nFINAL SELF-CHECK:\n- html is a complete document, not a fragment.\n- All CSS and JavaScript are embedded.\n- Every user requirement is represented in the page.\n- Navigation and requested frontend interactions work.\n- The layout is responsive and accessible.\n- No separate files are required to open the website.\n- requirements is non-empty and each item has id, description, and implementedIn.\n- title and implementationSummary are non-empty.\nReturn the schema object only; no Markdown or commentary.\n\nSTRICT RESPONSE FORMAT:\nReturn the structured object directly. Do not wrap it in Markdown, do not use ```json fences, and do not add prose before or after it.\n\nAI PROVIDER POLICY (MANDATORY):\nGoogle Gemini is the only permitted AI/LLM provider. For every language-model connection, use the n8n Google Gemini Chat Model node type `@n8n/n8n-nodes-langchain.lmChatGoogleGemini`. Use the configured default model `models/gemini-3.5-flash-lite` unless the user explicitly requests a different Gemini model. Never create OpenAI, Anthropic, OpenRouter, Groq, or any other non-Gemini model node. This restriction applies to AI model providers, not ordinary website assets or browser APIs. If a requested capability cannot be delivered in a standalone HTML file, state the limitation instead of pretending it is implemented.\n\nCODE FORMATTING POLICY (MANDATORY)\n\nGenerate human-readable, professionally formatted HTML, CSS and JavaScript. Use consistent 4-space indentation throughout. Place related elements and declarations on separate lines. Organize sections logically, use meaningful names, and include useful comments where appropriate. Never minify, compress or unnecessarily condense the generated code. The final downloadable HTML file must preserve all formatting and indentation.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a senior frontend engineer and visual web designer working inside Kontrolled Automations. Generate complete, polished, responsive, accessible single-file HTML websites. Follow the user's request and the structured output schema exactly. Embed CSS and JavaScript in the HTML. Do not return n8n workflows, multiple files, Markdown fences, or explanations outside the JSON object. Be honest about backend-dependent functionality. Google Gemini is the only permitted LLM provider."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1504,
+        -144
+      ],
+      "id": "4e28d207-9055-4993-a788-cc6faa9222c1",
+      "name": "AI Website Generator",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"html\": {\n      \"type\": \"string\",\n      \"minLength\": 100\n    },\n    \"title\": {\n      \"type\": \"string\",\n      \"minLength\": 1\n    },\n    \"requirements\": {\n      \"type\": \"array\",\n      \"minItems\": 1,\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\",\n            \"minLength\": 1\n          },\n          \"description\": {\n            \"type\": \"string\",\n            \"minLength\": 1\n          },\n          \"implementedIn\": {\n            \"type\": \"array\",\n            \"minItems\": 1,\n            \"items\": {\n              \"type\": \"string\",\n              \"minLength\": 1\n            }\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"description\",\n          \"implementedIn\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"implementationSummary\": {\n      \"type\": \"string\",\n      \"minLength\": 1\n    }\n  },\n  \"required\": [\n    \"html\",\n    \"title\",\n    \"requirements\",\n    \"implementationSummary\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1616,
+        96
+      ],
+      "id": "63706897-e72e-4840-98da-1f8d366b05f8",
+      "name": "Website Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1488,
+        96
+      ],
+      "id": "443f435f-1f1c-4aab-97ce-253c614b77d9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ulYkvrnYkv70FeYG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1696,
+        304
+      ],
+      "id": "90a027e8-c1f1-4312-9685-673164fca2df",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ulYkvrnYkv70FeYG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nlet data = item.json;\n\n// Unwrap common AI Agent output envelopes.\nif (data && typeof data === 'object' && data.output !== undefined) data = data.output;\n\nfunction extractJsonText(value) {\n  let text = String(value ?? '').replace(/^\\uFEFF/, '').trim();\n  if (!text) throw new Error('AI returned an empty response.');\n  const fenced = text.match(/^```(?:json)?\\s*([\\s\\S]*?)\\s*```$/i);\n  if (fenced) text = fenced[1].trim();\n  if (!text.startsWith('{')) {\n    const start = text.indexOf('{');\n    if (start < 0) throw new Error('No JSON object was found in the AI response.');\n    let depth = 0, inString = false, escaped = false, end = -1;\n    for (let i = start; i < text.length; i++) {\n      const ch = text[i];\n      if (inString) {\n        if (escaped) escaped = false;\n        else if (ch === '\\\\') escaped = true;\n        else if (ch === '\"') inString = false;\n      } else {\n        if (ch === '\"') inString = true;\n        else if (ch === '{') depth++;\n        else if (ch === '}') {\n          depth--;\n          if (depth === 0) { end = i + 1; break; }\n        }\n      }\n    }\n    if (end < 0) throw new Error('The AI response contains an incomplete JSON object.');\n    text = text.slice(start, end);\n  }\n  return text;\n}\n\nif (typeof data === 'string') {\n  try { data = JSON.parse(extractJsonText(data)); }\n  catch (e) {\n    return [{json:{valid:false,errors:['AI output could not be parsed as JSON: ' + String(e)],html:'',title:'',requirements:[],implementationSummary:''}}];\n  }\n}\nif (data && typeof data === 'object' && data.output !== undefined) {\n  let nested = data.output;\n  if (typeof nested === 'string') {\n    try { nested = JSON.parse(extractJsonText(nested)); }\n    catch (e) {\n      return [{json:{valid:false,errors:['Nested AI output could not be parsed: ' + String(e)],html:'',title:'',requirements:[],implementationSummary:''}}];\n    }\n  }\n  data = nested;\n}\n\nconst errors = [];\nlet html = data && typeof data.html === 'string' ? data.html.replace(/^\\uFEFF/, '').trim() : '';\nconst title = data && typeof data.title === 'string' ? data.title.trim() : '';\nconst requirements = Array.isArray(data && data.requirements) ? data.requirements : [];\nconst implementationSummary = data && typeof data.implementationSummary === 'string' ? data.implementationSummary : '';\n\nif (!html) errors.push('The generated HTML is missing or empty.');\nif (html.length > 2_000_000) errors.push('The generated HTML exceeds the 2 MB size limit.');\nif (/^```/.test(html) || /```$/.test(html)) errors.push('The HTML must not contain Markdown code fences.');\nif (!/^<!doctype html>/i.test(html)) errors.push('The document must begin with <!DOCTYPE html>.');\nfor (const [tag, pattern] of [\n  ['html', /<html\\b/i], ['head', /<head\\b/i], ['body', /<body\\b/i],\n  ['closing html', /<\\/html\\s*>/i], ['closing head', /<\\/head\\s*>/i], ['closing body', /<\\/body\\s*>/i],\n  ['title', /<title\\b[\\s\\S]*?<\\/title>/i], ['embedded CSS', /<style\\b[\\s\\S]*?<\\/style>/i],\n  ['viewport metadata', /<meta\\b[^>]*name\\s*=\\s*[\"']viewport[\"']/i]\n]) {\n  if (!pattern.test(html)) errors.push(`Required HTML element or feature is missing: ${tag}.`);\n}\nif (!title) errors.push('Website title is missing.');\nif (requirements.length === 0) errors.push('The AI did not return a non-empty requirements list.');\nelse {\n  for (const [i, req] of requirements.entries()) {\n    if (!req || typeof req !== 'object' || !req.id || !req.description ||\n        !Array.isArray(req.implementedIn) || req.implementedIn.length === 0) {\n      errors.push(`Requirement ${i + 1} is missing id, description, or implementedIn.`);\n    }\n  }\n}\nif (!implementationSummary.trim()) errors.push('Implementation summary is missing.');\n\nreturn [{json:{\n  valid: errors.length === 0,\n  errors,\n  html,\n  title,\n  requirements,\n  implementationSummary\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        -64
+      ],
+      "id": "75f9855f-590e-4626-a27d-523654194b29",
+      "name": "Validate Website",
+      "notes": "Checks the generated single-file HTML document, embedded CSS, metadata, required structure, and requirement metadata before a downloadable file is returned."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ecf1f623-8c5b-47c6-bfd6-be0ab528e5ee",
+              "leftValue": "={{ $json.valid || $runIndex >= 2 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2192,
+        -160
+      ],
+      "id": "8745b0d1-6d55-492f-b965-721811cc9de4",
+      "name": "If",
+      "notes": "Valid website proceeds to a final validity gate. Invalid output is repaired and revalidated. The retry limit prevents an endless repair loop."
+    },
+    {
+      "parameters": {
+        "respondWith": "binary",
+        "responseDataSource": "set",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Disposition",
+                "value": "={{ 'attachment; filename=\"' + $binary.data.fileName + '\"' }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2992,
+        -304
+      ],
+      "id": "0d1c2d53-dcc9-4380-837c-a0c4e8b9d09c",
+      "name": "Download HTML Website",
+      "notes": "Returns the generated website as a downloadable .html attachment using the binary data field `data`."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are the Kontrolled Website Repair Engineer. Repair the complete website HTML, not just its JSON wrapper.\n\nORIGINAL USER REQUEST:\n{{ $('Webhook').first().json.body.prompt }}\n\nVALIDATION ERRORS:\n{{ JSON.stringify($json.errors, null, 2) }}\n\nREQUIREMENT AUDIT:\n{{ JSON.stringify($json.requirements, null, 2) }}\n\nWEBSITE TITLE:\n{{ $json.title }}\n\nHTML TO REPAIR:\n{{ $json.html }}\n\nIMPLEMENTATION SUMMARY:\n{{ $json.implementationSummary }}\n\nReturn the same structured wrapper required by the Repair Output Parser:\n{\n  \"html\": \"<complete corrected HTML document>\",\n  \"title\": \"Website title\",\n  \"requirements\": [\n    {\"id\":\"R1\",\"description\":\"Requirement\",\"implementedIn\":[\"#section\"]}\n  ],\n  \"implementationSummary\": \"Brief summary\"\n}\n\nREPAIR INSTRUCTIONS:\n1. Fix every listed validation error.\n2. Re-read the original request and preserve every requested section, design choice, and frontend interaction.\n3. Return a complete standalone HTML5 document, not a fragment.\n4. Keep all CSS embedded in <style> elements and all JavaScript embedded in <script> elements.\n5. Preserve working design and functionality. Do not remove requested features merely to pass validation.\n6. Ensure responsive layout, semantic structure, accessibility, and working frontend interactions.\n7. Do not claim backend-dependent features work without a backend.\n8. Update requirements so every original requirement remains represented with id, description, and implementedIn.\n9. Return valid structured JSON only. No Markdown fences or commentary.\n\nAI PROVIDER POLICY (MANDATORY):\nUse Google Gemini only for every language-model connection (`@n8n/n8n-nodes-langchain.lmChatGoogleGemini`). Do not create or retain OpenAI, Anthropic, OpenRouter, Groq, or other non-Gemini model nodes.\nCODE FORMATTING POLICY (MANDATORY)\n\nGenerate human-readable, professionally formatted HTML, CSS and JavaScript. Use consistent 4-space indentation throughout. Place related elements and declarations on separate lines. Organize sections logically, use meaningful names, and include useful comments where appropriate. Never minify, compress or unnecessarily condense the generated code. The final downloadable HTML file must preserve all formatting and indentation.",
+        "options": {
+          "systemMessage": "You are a senior frontend repair engineer. Fix structural and functional HTML issues while preserving the user's original requirements and visual intent. Return exactly the structured wrapper expected by the connected parser. Produce one complete standalone HTML document with embedded CSS and JavaScript. Never invent backend functionality. Google Gemini is the only permitted LLM provider."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2416,
+        128
+      ],
+      "id": "cb5a0834-2f18-47cc-a3f6-28d966c74b27",
+      "name": "Fix Website",
+      "retryOnFail": false,
+      "executeOnce": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        2496,
+        368
+      ],
+      "id": "d41522d8-598a-46cf-8f28-84d97b50d615",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ulYkvrnYkv70FeYG",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "notes": "Select your Google Gemini API credential in n8n after importing. Credential IDs are intentionally not embedded in this export."
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"html\": {\n      \"type\": \"string\",\n      \"minLength\": 100\n    },\n    \"title\": {\n      \"type\": \"string\",\n      \"minLength\": 1\n    },\n    \"requirements\": {\n      \"type\": \"array\",\n      \"minItems\": 1,\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"string\",\n            \"minLength\": 1\n          },\n          \"description\": {\n            \"type\": \"string\",\n            \"minLength\": 1\n          },\n          \"implementedIn\": {\n            \"type\": \"array\",\n            \"minItems\": 1,\n            \"items\": {\n              \"type\": \"string\",\n              \"minLength\": 1\n            }\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"description\",\n          \"implementedIn\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"implementationSummary\": {\n      \"type\": \"string\",\n      \"minLength\": 1\n    }\n  },\n  \"required\": [\n    \"html\",\n    \"title\",\n    \"requirements\",\n    \"implementationSummary\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1872,
+        368
+      ],
+      "id": "f513326b-0eb4-4312-8e2d-3ae2a2189ae1",
+      "name": "Website Repair Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1ca1e06d-f371-47f6-a6a7-a996afd8e8fe",
+              "leftValue": "={{ typeof $json.body?.prompt === 'string' && $json.body.prompt.trim().length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        272
+      ],
+      "id": "cef15114-f3d4-4886-8d13-795a9124d4ff",
+      "name": "Validate Request"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: \"Request body must contain a non-empty string field named 'prompt'.\" } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1616,
+        464
+      ],
+      "id": "42716217-8b65-4fc8-b52c-d9d64de9b0f3",
+      "name": "Respond Invalid Request",
+      "notes": "Returns HTTP 400 when the webhook request has no usable prompt."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: $json.error?.message || $json.message || \"AI generation or repair failed. Check the Gemini credential, model availability, and quota.\" } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2768,
+        256
+      ],
+      "id": "0349c265-4a16-4336-87f0-80ec37005050",
+      "name": "Respond Generation Error",
+      "notes": "Returns HTTP 502 when the upstream AI/model operation fails."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18cbf852-2538-4e06-9d69-16ea202655b9",
+              "leftValue": "={{ $json.valid === true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2480,
+        -208
+      ],
+      "id": "b561655a-f0ee-4d93-bdab-3d43e78c5bfa",
+      "name": "If Website Valid",
+      "notes": "Only valid HTML is converted into a downloadable file. Invalid output after the repair limit returns a structured error."
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst html = item.json.html;\nif (typeof html !== 'string' || !html.trim()) {\n  throw new Error('Cannot create a download: validated HTML is missing.');\n}\n\nconst rawTitle = String(item.json.title || 'kontrolled-website');\nconst slug = rawTitle\n  .toLowerCase()\n  .normalize('NFKD')\n  .replace(/[\\u0300-\\u036f]/g, '')\n  .replace(/[^a-z0-9]+/g, '-')\n  .replace(/^-+|-+$/g, '')\n  .slice(0, 60) || 'kontrolled-website';\nconst fileName = `${slug}.html`;\n\nconst binary = await this.helpers.prepareBinaryData(\n  Buffer.from(html, 'utf8'),\n  fileName,\n  'text/html'\n);\n\nreturn [{\n  json: {\n    success: true,\n    title: rawTitle,\n    fileName,\n    implementationSummary: item.json.implementationSummary,\n    requirements: item.json.requirements\n  },\n  binary: { data: binary }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -304
+      ],
+      "id": "c19e494f-34e5-4248-bb47-74498b0cbe12",
+      "name": "Prepare HTML Download",
+      "notes": "Converts the validated HTML string into n8n binary data with a safe filename and text/html MIME type."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, message: 'Website generation did not pass validation after the maximum repair attempts. No file was created.', errors: $json.errors || [], title: $json.title || null } }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2768,
+        -112
+      ],
+      "id": "a19ad487-3e05-4f2b-824d-89ee4f96dad5",
+      "name": "Respond Invalid Website",
+      "notes": "Returns a structured 422 response when the website still fails validation after repair attempts."
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Website Generator": {
+      "main": [
+        [
+          {
+            "node": "Validate Website",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Generation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Website Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Website Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Website Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Website Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Website Repair Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Website": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If Website Valid",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fix Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fix Website": {
+      "main": [
+        [
+          {
+            "node": "Validate Website",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Generation Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fix Website",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "AI Website Generator",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Invalid Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Website Valid": {
+      "main": [
+        [
+          {
+            "node": "Prepare HTML Download",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Invalid Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare HTML Download": {
+      "main": [
+        [
+          {
+            "node": "Download HTML Website",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7f243919-32a5-47d8-b6f3-e7bfcd556918",
+  "meta": {
+    "instanceId": "d5e15f706fa2d8d38a52b438a277b025aa0f018e63de4b7be95e5f18573a4b13"
+  },
+  "nodeGroups": [],
+  "id": "f7hNN6mN7jB8JV1R",
+  "tags": []
+}
